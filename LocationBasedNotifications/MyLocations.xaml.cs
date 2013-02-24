@@ -10,35 +10,35 @@ using Microsoft.Phone.Shell;
 using System.Collections.ObjectModel;
 using LocationBasedNotifications.Model;
 using System.ComponentModel;
+using LocationBasedNotifications.Repository;
+using LocationBasedNotifications.Contracts;
 
 namespace LocationBasedNotifications
 {
     public partial class MyLocations : PhoneApplicationPage
     {
-        public ObservableCollection<string> myLocations = new ObservableCollection<string> { "bucharest", "turnu magurele", "iasi", "cluj" };
 
         #region Private Members
+        private IIsolatedStorageRepository<Location> _repository;
         private LocationsModel _model;
         #endregion Private Members
 
         #region Constructors
-        public MyLocations()
+        public MyLocations() : this(new IsolatedStorageRepository())
+        {
+        }
+        public MyLocations(IIsolatedStorageRepository<Location> repository)
         {
             InitializeComponent();
-
+            _repository = repository;
             _model = new LocationsModel();
-
-            _model.MyLocations.Add(new Location("HOME", 10, 10, string.Empty));
-            _model.MyLocations.Add(new Location("WORK", 10, 10, string.Empty));
-            _model.MyLocations.Add(new Location("ZARA SHOP", 10, 10, string.Empty));
-            
-            CreateAppBar();
-
             _model.PropertyChanged += OnEnableAppBarButtons;
 
+            PopulateModelWithIsolatedStorageData();
+
+            CreateAppBar();
             this.DataContext = _model;
         }
-
         #endregion Constructors
 
         #region Private Methods
@@ -111,15 +111,28 @@ namespace LocationBasedNotifications
             _model.SelectedItem = null;
             MyLocationsListBox.SelectedItem = null;
         }
-        #endregion Public Event Handlers
-
         private void CreateLocationButton_Click_1(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new Uri("/CreateLocation.xaml",UriKind.Relative));
+            NavigationService.Navigate(new Uri("/CreateLocation.xaml", UriKind.Relative));
         }
+        #endregion Public Event Handlers
 
+        private void PopulateModelWithIsolatedStorageData()
+        {
+            //_model.MyLocations.Add(new Location("HOME", 10, 10, string.Empty));
+            //_model.MyLocations.Add(new Location("WORK", 10, 10, string.Empty));
+            //_model.MyLocations.Add(new Location("ZARA SHOP", 10, 10, string.Empty));
+
+            IEnumerable<Location> locations = _repository.GetInMemoryLocations();
+            if (locations != null)
+            {
+                foreach (var location in locations)
+                {
+                    _model.MyLocations.Add(location);
+                }
+            }
+        }
         #endregion Private Methods
-
 
     }
 }

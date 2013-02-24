@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LocationBasedNotifications.Model
 {
-    public class Notification
+    public class Notification :  BaseModel
     {
         #region Properties
         private Location _location;

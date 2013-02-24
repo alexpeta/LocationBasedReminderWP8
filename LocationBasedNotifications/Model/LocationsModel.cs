@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LocationBasedNotifications.Model
 {
-    public class LocationsModel : INotifyPropertyChanged
+    public class LocationsModel : BaseModel
     {
         #region Properties
         private ObservableCollection<Location> _myLocations;
@@ -31,31 +31,15 @@ namespace LocationBasedNotifications.Model
                 }
 
                 _selectedItem = value;
-                RaisePropertyChanged("SelectedItem");
+                RaiseNotifyPropertyChanged("SelectedItem");
             }
         }
         #endregion Properties
 
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void RaisePropertyChanged(string propertyName)
-        {
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-        #endregion INotifyPropertyChanged
-
         #region Constructors
         public LocationsModel()
         {
-            if (!IsolatedStorageSettings.ApplicationSettings.TryGetValue<ObservableCollection<Location>>(Constants.LBNLocations, out _myLocations))
-            {
-                _myLocations = new ObservableCollection<Location>();
-            }
+            MyLocations = new ObservableCollection<Location>();
             SelectedItem = null;
         }
         #endregion Constructors

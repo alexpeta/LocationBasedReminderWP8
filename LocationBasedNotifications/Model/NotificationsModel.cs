@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LocationBasedNotifications.Model
 {
-    public class NotificationsModel
+    public class NotificationsModel : BaseModel
     {
     }
 }

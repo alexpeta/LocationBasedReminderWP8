@@ -10,17 +10,31 @@ using Microsoft.Phone.Shell;
 using System.IO.IsolatedStorage;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
-
-
+using LocationBasedNotifications.Model;
+using LocationBasedNotifications.Contracts;
+using LocationBasedNotifications.Repository;
 
 namespace LocationBasedNotifications
 {
     public partial class CreateReminder : PhoneApplicationPage
     {
-        public CreateReminder()
+        #region Private Members
+        private Location _model;
+        private IIsolatedStorageRepository<Location> _repository; 
+        #endregion Private Members
+
+        #region Constructors
+        public CreateReminder() : this((new IsolatedStorageRepository()))
+        {
+        }
+        public CreateReminder(IIsolatedStorageRepository<Location> repository)
         {
             InitializeComponent();
+            _model = new Location();
+            _repository = repository;
+            this.DataContext = _model;
         }
+        #endregion Constructors
 
         #region Button Handlers
         private async void GetMyLocationButton_Click(object sender, RoutedEventArgs e)
@@ -45,10 +59,17 @@ namespace LocationBasedNotifications
                 Geoposition currentPosition = await currentAsyncOperation;
                 if (currentPosition != null && currentPosition.Coordinate != null)
                 {
-                    LatitudeCoordinate.Text = currentPosition.Coordinate.Latitude.ToString("0.00");
-                    LongitudeCoordinate.Text = currentPosition.Coordinate.Longitude.ToString("0.00");
+                    _model.Latitude = currentPosition.Coordinate.Latitude;
+                    _model.Longitude = currentPosition.Coordinate.Longitude;
                 }
             }            
+        }
+        private void CreateLocationButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_repository.AddItem(_model))
+            {
+                NavigationService.Navigate(new Uri("/MyLocations.xaml", UriKind.Relative));
+            }
         }
         #endregion Button Handlers
     }
