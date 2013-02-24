@@ -93,7 +93,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Contracts\IIsolatedStorageRepository.cs" />
+    <Compile Include="Contracts\IRepository.cs" />
     <Compile Include="CreateLocation.xaml.cs">
       <DependentUpon>CreateLocation.xaml</DependentUpon>
     </Compile>
@@ -104,9 +104,11 @@
     </Compile>
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\Location.cs" />
-    <Compile Include="Model\LocationsModel.cs" />
+    <Compile Include="Repository\LocalStorageRepository.cs" />
+    <Compile Include="Repository\ReminderDataContext.cs" />
+    <Compile Include="ViewModels\LocationsViewModel.cs" />
     <Compile Include="Model\Notification.cs" />
-    <Compile Include="Model\NotificationsModel.cs" />
+    <Compile Include="ViewModels\NotificationsViewModel.cs" />
     <Compile Include="MyLocations.xaml.cs">
       <DependentUpon>MyLocations.xaml</DependentUpon>
     </Compile>

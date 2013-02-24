@@ -48,8 +48,8 @@
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <StackPanel Orientation="Vertical">
-                <Button x:Name="ViewRemindersButtton" Content="My Reminders"></Button>
-                <Button x:Name="ViewLocationsButton" Content="My Locations" Click="ViewLocationsButton_Click"></Button>
+                <Button x:Name="ViewRemindersButtton" Content="Manage Reminders"></Button>
+                <Button x:Name="ViewLocationsButton" Content="Manage Locations" Click="ViewLocationsButton_Click"></Button>
                 <!--<Button x:Name="CreateRemindersButtton" Content="Create new" Click="CreateRemindersButtton_Click"></Button>-->
             </StackPanel>
 

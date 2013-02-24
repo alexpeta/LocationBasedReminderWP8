@@ -13,6 +13,7 @@ namespace LocationBasedNotifications
         public readonly static int Timeout = 10; //seconds
         public readonly static string LocationAgreement = "useLocationAgreement";
         public readonly static string LBNLocations = "LBNLocations";
+        public readonly static string DBConnectionString = "Data Source=isostore:/LocationBasedReminders.sdf";
 
         private Constants()
         {

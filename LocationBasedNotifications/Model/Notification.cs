@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LocationBasedNotifications.Model
+namespace LocationBasedNotifications
 {
     public class Notification :  BaseModel
     {

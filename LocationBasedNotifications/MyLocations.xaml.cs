@@ -8,7 +8,6 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Collections.ObjectModel;
-using LocationBasedNotifications.Model;
 using System.ComponentModel;
 using LocationBasedNotifications.Repository;
 using LocationBasedNotifications.Contracts;
@@ -17,24 +16,23 @@ namespace LocationBasedNotifications
 {
     public partial class MyLocations : PhoneApplicationPage
     {
-
         #region Private Members
-        private IIsolatedStorageRepository<Location> _repository;
-        private LocationsModel _model;
+        private IRepository<Location> _repository;
+        private LocationsViewModel _model;
         #endregion Private Members
 
         #region Constructors
-        public MyLocations() : this(new IsolatedStorageRepository())
+        public MyLocations() : this(new LocalStorageRepository())
         {
         }
-        public MyLocations(IIsolatedStorageRepository<Location> repository)
+        public MyLocations(IRepository<Location> repository)
         {
             InitializeComponent();
             _repository = repository;
-            _model = new LocationsModel();
+            _model = new LocationsViewModel();
             _model.PropertyChanged += OnEnableAppBarButtons;
 
-            PopulateModelWithIsolatedStorageData();
+            PopulateModelWithStorageData();
 
             CreateAppBar();
             this.DataContext = _model;
@@ -49,6 +47,13 @@ namespace LocationBasedNotifications
             ApplicationBar.Mode = ApplicationBarMode.Minimized;
             ApplicationBar.Opacity = 1.0;
             ApplicationBar.IsMenuEnabled = true;
+            
+            ApplicationBarIconButton addBarButton = new ApplicationBarIconButton();
+            addBarButton.IconUri = new Uri("/Images/new.png", UriKind.Relative);
+            addBarButton.Text = "New Location";
+            addBarButton.IsEnabled = true;
+            addBarButton.Click += CreateLocationButton_Click;
+            ApplicationBar.Buttons.Add(addBarButton);
 
             ApplicationBarIconButton deleteLocationBarButton = new ApplicationBarIconButton();
             deleteLocationBarButton.IconUri = new Uri("/Images/delete.png", UriKind.Relative);
@@ -88,8 +93,10 @@ namespace LocationBasedNotifications
                     ApplicationBarIconButton castedButton = button as ApplicationBarIconButton;
                     if (castedButton != null)
                     {
-                        //use local reference of _model or cast from sender?
-                        castedButton.IsEnabled = _model.SelectedItem != null;
+                        if (castedButton.Text != "New Location")
+                        {
+                            castedButton.IsEnabled = _model.SelectedItem != null;
+                        }
                     }
                 }
             }
@@ -101,6 +108,7 @@ namespace LocationBasedNotifications
             {
                 if (_model.SelectedItem != null)
                 {
+                    _repository.RemoveItem(_model.SelectedItem);
                     _model.MyLocations.Remove(_model.SelectedItem);
                     _model.SelectedItem = null;
                 }
@@ -109,20 +117,16 @@ namespace LocationBasedNotifications
         private void CancelSelectionBarButton_Click(object sender, EventArgs e)
         {
             _model.SelectedItem = null;
-            MyLocationsListBox.SelectedItem = null;
+            //MyLocationsListBox.SelectedItem = null;
         }
-        private void CreateLocationButton_Click_1(object sender, RoutedEventArgs e)
+        private void CreateLocationButton_Click(object sender, EventArgs e)
         {
             NavigationService.Navigate(new Uri("/CreateLocation.xaml", UriKind.Relative));
         }
         #endregion Public Event Handlers
 
-        private void PopulateModelWithIsolatedStorageData()
+        private void PopulateModelWithStorageData()
         {
-            //_model.MyLocations.Add(new Location("HOME", 10, 10, string.Empty));
-            //_model.MyLocations.Add(new Location("WORK", 10, 10, string.Empty));
-            //_model.MyLocations.Add(new Location("ZARA SHOP", 10, 10, string.Empty));
-
             IEnumerable<Location> locations = _repository.GetInMemoryLocations();
             if (locations != null)
             {

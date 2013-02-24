@@ -1,5 +1,4 @@
 ﻿using LocationBasedNotifications.Contracts;
-using LocationBasedNotifications.Model;
 using System;
 using System.Collections.Generic;
 using System.IO.IsolatedStorage;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LocationBasedNotifications.Repository
 {
-    public class IsolatedStorageRepository : IIsolatedStorageRepository<Location>
+    public class IsolatedStorageRepository : IRepository<Location>
     {
         #region IIsolatedStorageRepository
         public IEnumerable<Location> GetInMemoryLocations()

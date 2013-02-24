@@ -29,9 +29,8 @@
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <StackPanel>
-                <Button x:Name="CreateLocationButton" Content="Create Location" Click="CreateLocationButton_Click_1"></Button>
-                <TextBlock Text="Use existing locations:"></TextBlock>
-                <ListBox x:Name="MyLocationsListBox" ItemsSource="{Binding Path=MyLocations}" SelectionChanged="OnSelectedLocationChanged">
+                <ListBox x:Name="MyLocationsListBox" ItemsSource="{Binding Path=MyLocations}" SelectionChanged="OnSelectedLocationChanged" SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}"
+                         FontSize="{StaticResource PhoneFontSizeLarge}" Margin="10,0,0,0">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Name}"></TextBlock>

@@ -7,16 +7,28 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using LocationBasedNotifications.Resources;
+using LocationBasedNotifications.Repository;
 
 namespace LocationBasedNotifications
 {
     public partial class App : Application
     {
+
+        private static ReminderDataContext _localDB;
+
         /// <summary>
         /// Provides easy access to the root frame of the Phone Application.
         /// </summary>
         /// <returns>The root frame of the Phone Application.</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
+
+        public static ReminderDataContext LocalDB 
+        { 
+            get 
+            { 
+                return _localDB; 
+            } 
+        }
 
         /// <summary>
         /// Constructor for the Application object.
@@ -34,6 +46,10 @@ namespace LocationBasedNotifications
 
             // Language display initialization
             InitializeLanguage();
+
+            //Initalize the local db
+            InitializeDatabase();
+
 
             // Show graphics profiling information while debugging.
             if (Debugger.IsAttached)
@@ -55,6 +71,16 @@ namespace LocationBasedNotifications
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
+        }
+
+        private void InitializeDatabase()
+        {
+            ReminderDataContext db = new ReminderDataContext(Constants.DBConnectionString);
+            if (!db.DatabaseExists())
+            {
+                db.CreateDatabase();
+            }
+            _localDB = db;
         }
 
         // Code to execute when the application is launching (eg, from Start)

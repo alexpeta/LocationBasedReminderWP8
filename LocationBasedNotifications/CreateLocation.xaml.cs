@@ -10,7 +10,6 @@ using Microsoft.Phone.Shell;
 using System.IO.IsolatedStorage;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
-using LocationBasedNotifications.Model;
 using LocationBasedNotifications.Contracts;
 using LocationBasedNotifications.Repository;
 
@@ -20,14 +19,14 @@ namespace LocationBasedNotifications
     {
         #region Private Members
         private Location _model;
-        private IIsolatedStorageRepository<Location> _repository; 
+        private IRepository<Location> _repository; 
         #endregion Private Members
 
         #region Constructors
-        public CreateReminder() : this((new IsolatedStorageRepository()))
+        public CreateReminder() : this((new LocalStorageRepository()))
         {
         }
-        public CreateReminder(IIsolatedStorageRepository<Location> repository)
+        public CreateReminder(IRepository<Location> repository)
         {
             InitializeComponent();
             _model = new Location();

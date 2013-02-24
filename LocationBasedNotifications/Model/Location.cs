@@ -1,16 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Linq;
+using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LocationBasedNotifications.Model
+namespace LocationBasedNotifications
 {
+    [Table]
     public class Location : BaseModel
     {
         #region Properties
+        private int _locationId;
+
+        [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "INT NOT NULL Identity", CanBeNull = false, AutoSync = AutoSync.OnInsert)]
+        public int LocationId
+        {
+            get { return _locationId; }
+            set { _locationId = value; }
+        }
+        
         private string _name;
+
+        [Column]
         public string Name
         {
             get { return _name; }
@@ -20,12 +34,16 @@ namespace LocationBasedNotifications.Model
                 {
                     return;
                 }
+
+                NotifyPropertyChanging("Name");
                 _name = value;
-                RaiseNotifyPropertyChanged("Name");
+                NotifyPropertyChanged("Name");
             }
         }
 
         private double _latitude;
+
+        [Column]
         public double Latitude
         {
             get { return _latitude; }
@@ -35,12 +53,16 @@ namespace LocationBasedNotifications.Model
                 {
                     return;
                 }
+
+                NotifyPropertyChanging("Latitude");
                 _latitude = value;
-                RaiseNotifyPropertyChanged("Latitude");
+                NotifyPropertyChanged("Latitude");
             }
         }
 
         private double _longitude;
+
+        [Column]
         public double Longitude
         {
             get { return _longitude; }
@@ -50,12 +72,16 @@ namespace LocationBasedNotifications.Model
                 {
                     return;
                 }
+
+                NotifyPropertyChanging("Longitude");
                 _longitude = value;
-                RaiseNotifyPropertyChanged("Longitude");
+                NotifyPropertyChanged("Longitude");
             }
         }
 
         private string _description;
+
+        [Column]
         public string Description
         {
             get { return _description; }
@@ -65,10 +91,16 @@ namespace LocationBasedNotifications.Model
                 {
                     return;
                 }
+
+                NotifyPropertyChanging("Description");
                 _description = value;
-                RaiseNotifyPropertyChanged("Description");
+                NotifyPropertyChanged("Description");
             }
         }
+
+        // Version column aids update performance.
+        [Column(IsVersion = true)]
+        private Binary _version;
         #endregion Properties
 
         #region Constructors
