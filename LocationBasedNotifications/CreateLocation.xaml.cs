@@ -67,7 +67,7 @@ namespace LocationBasedNotifications
         {
             if (_repository.AddItem(_model))
             {
-                NavigationService.Navigate(new Uri("/MyLocations.xaml", UriKind.Relative));
+                NavigationService.Navigate(new Uri(string.Format("/MyLocations.xaml?locationID={0}",_model.LocationId), UriKind.Relative));
             }
         }
         #endregion Button Handlers

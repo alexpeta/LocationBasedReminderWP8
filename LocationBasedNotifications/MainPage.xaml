@@ -50,7 +50,7 @@
             <StackPanel Orientation="Vertical">
                 <Button x:Name="ViewRemindersButtton" Content="Manage Reminders"></Button>
                 <Button x:Name="ViewLocationsButton" Content="Manage Locations" Click="ViewLocationsButton_Click"></Button>
-                <!--<Button x:Name="CreateRemindersButtton" Content="Create new" Click="CreateRemindersButtton_Click"></Button>-->
+                <Button x:Name="GOTO" Content="Create TOAST" Click="GOTO_Click_1"></Button>
             </StackPanel>
 
         </Grid>

@@ -32,5 +32,11 @@ namespace LocationBasedNotifications
         }
         #endregion Button Handlers
 
+        private void GOTO_Click_1(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/Map.xaml?locationID=1", UriKind.Relative));
+        }
+
+
     }
 }

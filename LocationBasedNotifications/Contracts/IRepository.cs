@@ -10,7 +10,8 @@ namespace LocationBasedNotifications.Contracts
     public interface IRepository<T>
         where T : BaseModel
     {
-        IEnumerable<T> GetInMemoryLocations();
+        T GetItemById(int id);
+        IEnumerable<T> GetInMemoryItems();
         bool AddItem(T itemToAdd);
         bool RemoveItem(T itemToRemove);
         void Save(IEnumerable<T> list);

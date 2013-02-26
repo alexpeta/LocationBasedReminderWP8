@@ -21,7 +21,7 @@ namespace LocationBasedNotifications.Repository
         #endregion Constructors
 
         #region IRepository
-        public IEnumerable<Location> GetInMemoryLocations()
+        public IEnumerable<Location> GetInMemoryItems()
         {
             var results = from d in _db.Locations
                           select d;
@@ -73,7 +73,15 @@ namespace LocationBasedNotifications.Repository
         {
             throw new NotImplementedException();
         }
+        public Location GetItemById(int id)
+        {
+            Location result = _db.Locations.FirstOrDefault(l => l.LocationId == id);
+
+            return result;
+        }
         #endregion IRepository
-        
+
+
+
     }
 }

@@ -11,7 +11,7 @@ namespace LocationBasedNotifications.Repository
     public class IsolatedStorageRepository : IRepository<Location>
     {
         #region IIsolatedStorageRepository
-        public IEnumerable<Location> GetInMemoryLocations()
+        public IEnumerable<Location> GetInMemoryItems()
         {
             IEnumerable<Location> result = null;
             try
@@ -70,6 +70,10 @@ namespace LocationBasedNotifications.Repository
                 IsolatedStorageSettings.ApplicationSettings.Remove(Constants.LBNLocations);
             }
             IsolatedStorageSettings.ApplicationSettings[Constants.LBNLocations] = list;
+        }
+        public Location GetItemById(int id)
+        {
+            throw new NotImplementedException();
         }
         #endregion IIsolatedStorageRepository
 

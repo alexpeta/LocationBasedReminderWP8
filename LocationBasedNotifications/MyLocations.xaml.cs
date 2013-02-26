@@ -44,7 +44,7 @@ namespace LocationBasedNotifications
         {
             ApplicationBar = new ApplicationBar();
 
-            ApplicationBar.Mode = ApplicationBarMode.Minimized;
+            ApplicationBar.Mode = ApplicationBarMode.Default;
             ApplicationBar.Opacity = 1.0;
             ApplicationBar.IsMenuEnabled = true;
             
@@ -69,6 +69,13 @@ namespace LocationBasedNotifications
             cancelSelectionBarButton.Click += CancelSelectionBarButton_Click;
             ApplicationBar.Buttons.Add(cancelSelectionBarButton);
 
+            ApplicationBarIconButton backBarButton = new ApplicationBarIconButton();
+            backBarButton.IconUri = new Uri("/Images/back.png", UriKind.Relative);
+            backBarButton.Text = "Back";
+            backBarButton.IsEnabled = true;
+            backBarButton.Click += BackToMainScreenBarButton_Click;
+            ApplicationBar.Buttons.Add(backBarButton);
+
         }
 
         #region Private Event Handlers
@@ -86,14 +93,15 @@ namespace LocationBasedNotifications
         }
         private void OnEnableAppBarButtons(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "SelectedItem")
+            if (string.Equals(e.PropertyName,"SelectedItem",StringComparison.CurrentCultureIgnoreCase))
             {
                 foreach (var button in ApplicationBar.Buttons)
                 {
                     ApplicationBarIconButton castedButton = button as ApplicationBarIconButton;
                     if (castedButton != null)
                     {
-                        if (castedButton.Text != "New Location")
+                        if (!string.Equals(castedButton.Text,"New Location",StringComparison.CurrentCultureIgnoreCase) &&
+                            !string.Equals(castedButton.Text, "Back", StringComparison.CurrentCultureIgnoreCase))
                         {
                             castedButton.IsEnabled = _model.SelectedItem != null;
                         }
@@ -123,11 +131,15 @@ namespace LocationBasedNotifications
         {
             NavigationService.Navigate(new Uri("/CreateLocation.xaml", UriKind.Relative));
         }
+        private void BackToMainScreenBarButton_Click(object sender, EventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
+        }
         #endregion Public Event Handlers
 
         private void PopulateModelWithStorageData()
         {
-            IEnumerable<Location> locations = _repository.GetInMemoryLocations();
+            IEnumerable<Location> locations = _repository.GetInMemoryItems();
             if (locations != null)
             {
                 foreach (var location in locations)
