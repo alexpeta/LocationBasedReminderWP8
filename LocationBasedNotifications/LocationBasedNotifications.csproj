@@ -106,20 +106,33 @@
       <DependentUpon>Map.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\BaseModel.cs" />
-    <Compile Include="Model\Location.cs" />
-    <Compile Include="Model\ReminderStatus.cs" />
+    <Compile Include="Model\Location.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\Reminder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Model\ReminderStatus.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ReminderPivot.xaml.cs">
       <DependentUpon>ReminderPivot.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Repository\LocalStorageRepository.cs" />
-    <Compile Include="Repository\ReminderDataContext.cs" />
+    <Compile Include="Repository\IsolatedStorageRepository.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Repository\LocalStorageRepository.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Repository\ReminderDataContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ViewModels\LocationsViewModel.cs" />
     <Compile Include="ViewModels\NotificationsViewModel.cs" />
     <Compile Include="MyLocations.xaml.cs">
       <DependentUpon>MyLocations.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repository\IsolatedStorageRepository.cs" />
     <Compile Include="Resources\AppResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

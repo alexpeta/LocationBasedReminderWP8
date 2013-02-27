@@ -9,11 +9,21 @@ using System.Threading.Tasks;
 
 namespace LocationBasedNotifications
 {
-    [Table]
+    [Table(Name="Locations")]
     public class Location : BaseModel
     {
-        #region Properties
+        #region Private Members
         private int _locationId;
+        private string _name;
+        private double _latitude;
+        private double _longitude;
+        private string _description;
+        #endregion Private Members
+
+        #region Properties
+        // Version column aids update performance.
+        [Column(IsVersion = true)]
+        private Binary _version;
 
         [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "INT NOT NULL Identity", CanBeNull = false, AutoSync = AutoSync.OnInsert)]
         public int LocationId
@@ -22,9 +32,7 @@ namespace LocationBasedNotifications
             set { _locationId = value; }
         }
         
-        private string _name;
-
-        [Column]
+        [Column(CanBeNull=false)]
         public string Name
         {
             get { return _name; }
@@ -40,10 +48,8 @@ namespace LocationBasedNotifications
                 NotifyPropertyChanged("Name");
             }
         }
-
-        private double _latitude;
-
-        [Column]
+        
+        [Column(CanBeNull = false)]
         public double Latitude
         {
             get { return _latitude; }
@@ -59,10 +65,8 @@ namespace LocationBasedNotifications
                 NotifyPropertyChanged("Latitude");
             }
         }
-
-        private double _longitude;
-
-        [Column]
+        
+        [Column(CanBeNull = false)]
         public double Longitude
         {
             get { return _longitude; }
@@ -78,9 +82,7 @@ namespace LocationBasedNotifications
                 NotifyPropertyChanged("Longitude");
             }
         }
-
-        private string _description;
-
+        
         [Column]
         public string Description
         {
@@ -98,9 +100,18 @@ namespace LocationBasedNotifications
             }
         }
 
-        // Version column aids update performance.
-        [Column(IsVersion = true)]
-        private Binary _version;
+        //[Association(Storage = "_reminder", ThisKey = "_reminderId", OtherKey = "ReminderId", IsForeignKey = true, DeleteOnNull = true)]
+        //public Reminder Reminder
+        //{
+        //    get
+        //    {
+        //        return _reminder.Entity;
+        //    }
+        //    set
+        //    {
+        //        _reminder.Entity = value;
+        //    }
+        //}
         #endregion Properties
 
         #region Constructors
@@ -115,7 +126,6 @@ namespace LocationBasedNotifications
             Description = description;
         }
         #endregion Constructors
-
 
     }
 }

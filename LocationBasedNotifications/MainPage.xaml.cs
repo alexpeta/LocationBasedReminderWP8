@@ -10,6 +10,7 @@ using Microsoft.Phone.Shell;
 using LocationBasedNotifications.Resources;
 using Windows.Storage;
 using Microsoft.Phone.Scheduler;
+using LocationBasedNotifications.Repository;
 
 namespace LocationBasedNotifications
 {
@@ -38,8 +39,6 @@ namespace LocationBasedNotifications
             NavigationService.Navigate(new Uri("/ReminderPivot.xaml", UriKind.Relative));
         }
         #endregion Button Handlers
-
-
 
     }
 }

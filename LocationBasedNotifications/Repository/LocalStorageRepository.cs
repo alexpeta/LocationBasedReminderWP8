@@ -86,7 +86,17 @@ namespace LocationBasedNotifications.Repository
         }
         #endregion IRepository
 
+        public List<Reminder> GetRemindersList()
+        {
+            List<Reminder> result = null;
 
+            if (_db.Locations != null)
+            {
+                result = _db.Reminders.ToList();
+            }
+
+            return result;
+        }
 
     }
 }

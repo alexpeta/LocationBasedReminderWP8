@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace LocationBasedNotifications
 {
-    [Table]
+    [Table(Name="ReminderStatuses")]
     public class ReminderStatus : BaseModel
     {
-        private int _reminderId;
+        private int _reminderStatusId;
+        private string _value;
+        
 
         [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "INT NOT NULL Identity", CanBeNull = false, AutoSync = AutoSync.OnInsert)]
-        public int ReminderId
+        public int ReminderStatusId
         {
-            get { return _reminderId; }
-            set { _reminderId = value; }
+            get { return _reminderStatusId; }
+            set { _reminderStatusId = value; }
         }
-
-        private string _value;
-
+        
         [Column]
         public string Value
         {
@@ -39,7 +39,7 @@ namespace LocationBasedNotifications
         }
         public ReminderStatus(int reminderId,string value)
         {
-            ReminderId = reminderId;
+            ReminderStatusId = reminderId;
             Value = value;
         }
         #endregion Constructors

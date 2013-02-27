@@ -23,7 +23,11 @@ namespace LocationBasedNotifications
         /// </summary>
         /// <returns>The root frame of the Phone Application.</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
-
+        
+        /// <summary>
+        /// Provides access to the local storage
+        /// </summary>
+        /// <returns>the DataContext</returns>
         public static ReminderDataContext LocalDB 
         { 
             get 
@@ -76,27 +80,25 @@ namespace LocationBasedNotifications
 
         private void InitializeDatabase()
         {
-            ReminderDataContext db = new ReminderDataContext(Constants.DBConnectionString);
-            if (db.DatabaseExists())
+            _localDB = new ReminderDataContext(Constants.DBConnectionString);
+            if (_localDB.DatabaseExists())
             {
-                db.DeleteDatabase();
+                _localDB.DeleteDatabase();
             }
-
-            db.CreateDatabase();
-            _localDB = db;
+            _localDB.CreateDatabase();
 
             //seed the database with inital required data
             //like statuses
             if (_localDB.ReminderStatuses != null)
             {
+
                 List<ReminderStatus> statuses = new List<ReminderStatus>()
                 {
-                   new ReminderStatus(1, "All"),
-                   new ReminderStatus(2, "Active"),
-                   new ReminderStatus(3, "Inactive")
+                    new ReminderStatus(1,"All"),
+                    new ReminderStatus(2,"Active"),
+                    new ReminderStatus(3,"Inactive")
                 };
-
-                _localDB.ReminderStatuses.InsertAllOnSubmit<ReminderStatus>(statuses);
+                _localDB.ReminderStatuses.InsertAllOnSubmit<ReminderStatus>(statuses);                
                 _localDB.SubmitChanges();
             }
         }
@@ -158,7 +160,10 @@ namespace LocationBasedNotifications
 
             // Create the frame but don't set it as RootVisual yet; this allows the splash
             // screen to remain active until the application is ready to render.
-            RootFrame = new PhoneApplicationFrame();
+            
+            //RootFrame = new PhoneApplicationFrame();
+            RootFrame = new TransitionFrame();
+
             RootFrame.Navigated += CompleteInitializePhoneApplication;
 
             // Handle navigation failures

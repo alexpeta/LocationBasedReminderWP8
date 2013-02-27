@@ -13,10 +13,38 @@ namespace LocationBasedNotifications
 {
     public partial class ReminderPivot : PhoneApplicationPage
     {
+
+
+        #region Constructors
         public ReminderPivot()
         {
             InitializeComponent();
         }
+        #endregion Constructors
+
+
+        private void LoadTestReminder()
+        {
+            //ReminderStatus active = new ReminderStatus();
+            //active.ReminderStatusId = 1;
+            //active.Value = "Active";
+            //_localDB.ReminderStatuses.InsertOnSubmit(active);
+
+            //Location location = new Location();
+            //location.Name = "Home";
+            //location.LocationId = 1;
+
+
+            //Reminder reminder = new Reminder();
+            //reminder.ReminderId = 1;
+            //reminder.Status = active;
+            //reminder.Location = location;
+
+
+            //_localDB.Reminders.InsertOnSubmit(reminder);
+        }
+
+
 
         #region Overrides
         protected override void OnNavigatedTo(NavigationEventArgs e)
