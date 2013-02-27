@@ -9,11 +9,13 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using LocationBasedNotifications.Resources;
 using Windows.Storage;
+using Microsoft.Phone.Scheduler;
 
 namespace LocationBasedNotifications
 {
     public partial class MainPage : PhoneApplicationPage
     {
+
         // Constructor
         public MainPage()
         {
@@ -30,12 +32,13 @@ namespace LocationBasedNotifications
         {
             NavigationService.Navigate(new Uri("/MyLocations.xaml", UriKind.Relative));
         }
-        #endregion Button Handlers
-
         private void GOTO_Click_1(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new Uri("/Map.xaml?locationID=1", UriKind.Relative));
+            //NavigationService.Navigate(new Uri("/Map.xaml?locationID=1", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/ReminderPivot.xaml", UriKind.Relative));
         }
+        #endregion Button Handlers
+
 
 
     }

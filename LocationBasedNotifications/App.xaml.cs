@@ -8,6 +8,8 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using LocationBasedNotifications.Resources;
 using LocationBasedNotifications.Repository;
+using System.Collections.Generic;
+using Microsoft.Phone.Data.Linq;
 
 namespace LocationBasedNotifications
 {
@@ -70,17 +72,33 @@ namespace LocationBasedNotifications
                 // and consume battery power when the user is not using the phone.
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
-
         }
 
         private void InitializeDatabase()
         {
             ReminderDataContext db = new ReminderDataContext(Constants.DBConnectionString);
-            if (!db.DatabaseExists())
+            if (db.DatabaseExists())
             {
-                db.CreateDatabase();
+                db.DeleteDatabase();
             }
+
+            db.CreateDatabase();
             _localDB = db;
+
+            //seed the database with inital required data
+            //like statuses
+            if (_localDB.ReminderStatuses != null)
+            {
+                List<ReminderStatus> statuses = new List<ReminderStatus>()
+                {
+                   new ReminderStatus(1, "All"),
+                   new ReminderStatus(2, "Active"),
+                   new ReminderStatus(3, "Inactive")
+                };
+
+                _localDB.ReminderStatuses.InsertAllOnSubmit<ReminderStatus>(statuses);
+                _localDB.SubmitChanges();
+            }
         }
 
         // Code to execute when the application is launching (eg, from Start)

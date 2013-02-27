@@ -107,10 +107,13 @@
     </Compile>
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\Location.cs" />
+    <Compile Include="Model\ReminderStatus.cs" />
+    <Compile Include="ReminderPivot.xaml.cs">
+      <DependentUpon>ReminderPivot.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Repository\LocalStorageRepository.cs" />
     <Compile Include="Repository\ReminderDataContext.cs" />
     <Compile Include="ViewModels\LocationsViewModel.cs" />
-    <Compile Include="Model\Notification.cs" />
     <Compile Include="ViewModels\NotificationsViewModel.cs" />
     <Compile Include="MyLocations.xaml.cs">
       <DependentUpon>MyLocations.xaml</DependentUpon>
@@ -141,6 +144,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MyLocations.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ReminderPivot.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -189,6 +196,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Phone.Controls, Version=8.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Phone.Controls.Toolkit">
       <HintPath>..\packages\WPtoolkit.4.2012.10.30\lib\wp8\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
     </Reference>

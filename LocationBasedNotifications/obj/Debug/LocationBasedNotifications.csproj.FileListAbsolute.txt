@@ -21,3 +21,5 @@ c:\users\alex\documents\visual studio 2012\Projects\LocationBasedNotifications\L
 C:\Users\Alex\documents\visual studio 2012\Projects\LocationBasedNotifications\LocationBasedNotifications\Bin\Debug\Microsoft.Phone.Controls.Toolkit.dll
 C:\Users\Alex\documents\visual studio 2012\Projects\LocationBasedNotifications\LocationBasedNotifications\obj\Debug\LocationBasedNotifications.csprojResolveAssemblyReference.cache
 C:\Users\Alex\documents\visual studio 2012\Projects\LocationBasedNotifications\LocationBasedNotifications\obj\Debug\Map.g.cs
+C:\Users\Alex\documents\visual studio 2012\Projects\LocationBasedNotifications\LocationBasedNotifications\Bin\Debug\Microsoft.Phone.Controls.dll
+C:\Users\Alex\documents\visual studio 2012\Projects\LocationBasedNotifications\LocationBasedNotifications\obj\Debug\ReminderPivot.g.cs

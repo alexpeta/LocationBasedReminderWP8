@@ -23,10 +23,14 @@ namespace LocationBasedNotifications.Repository
         #region IRepository
         public IEnumerable<Location> GetInMemoryItems()
         {
-            var results = from d in _db.Locations
-                          select d;
+            List<Location> result = null;
 
-            return results;
+            if (_db.Locations != null)
+            {
+                result = _db.Locations.ToList();
+            }
+
+            return result;
         }
 
         public bool AddItem(Location itemToAdd)
@@ -69,15 +73,16 @@ namespace LocationBasedNotifications.Repository
             return true;
         }
 
-        public void Save(IEnumerable<Location> list)
-        {
-            throw new NotImplementedException();
-        }
         public Location GetItemById(int id)
         {
             Location result = _db.Locations.FirstOrDefault(l => l.LocationId == id);
 
             return result;
+        }
+
+        public void Save(IEnumerable<Location> list)
+        {
+            throw new NotImplementedException();
         }
         #endregion IRepository
 
