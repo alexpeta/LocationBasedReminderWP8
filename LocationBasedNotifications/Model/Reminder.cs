@@ -92,5 +92,17 @@ namespace LocationBasedNotifications
         }
         #endregion Constructors
 
+        #region Overrides
+        public override string ToString()
+        {
+            string result = null;
+            if(this.Name != null)
+            {
+                result = Name;
+            }
+            return result;
+        }
+        #endregion Overrides
+
     }
 }

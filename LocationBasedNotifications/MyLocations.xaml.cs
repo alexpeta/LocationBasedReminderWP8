@@ -17,23 +17,14 @@ namespace LocationBasedNotifications
     public partial class MyLocations : PhoneApplicationPage
     {
         #region Private Members
-        private IRepository<Location> _repository;
-        private LocationsViewModel _model;
+        private LocationViewModel _model;
         #endregion Private Members
 
         #region Constructors
-        public MyLocations() : this(new LocalStorageRepository())
-        {
-        }
-        public MyLocations(IRepository<Location> repository)
+        public MyLocations()
         {
             InitializeComponent();
-            _repository = repository;
-            _model = new LocationsViewModel();
-            _model.PropertyChanged += OnEnableAppBarButtons;
-
-            PopulateModelWithStorageData();
-
+            _model = new LocationViewModel();
             CreateAppBar();
             this.DataContext = _model;
         }
@@ -49,34 +40,35 @@ namespace LocationBasedNotifications
             ApplicationBar.IsMenuEnabled = true;
             
             ApplicationBarIconButton addBarButton = new ApplicationBarIconButton();
-            addBarButton.IconUri = new Uri("/Images/new.png", UriKind.Relative);
+            addBarButton.IconUri = new Uri("/Assets/new.png", UriKind.Relative);
             addBarButton.Text = "New Location";
             addBarButton.IsEnabled = true;
             addBarButton.Click += CreateLocationButton_Click;
             ApplicationBar.Buttons.Add(addBarButton);
 
             ApplicationBarIconButton deleteLocationBarButton = new ApplicationBarIconButton();
-            deleteLocationBarButton.IconUri = new Uri("/Images/delete.png", UriKind.Relative);
+            deleteLocationBarButton.IconUri = new Uri("/Assets/delete.png", UriKind.Relative);
             deleteLocationBarButton.Text = "Delete";
             deleteLocationBarButton.IsEnabled = false;
             deleteLocationBarButton.Click += DeleteLocationBarButton_Click;
             ApplicationBar.Buttons.Add(deleteLocationBarButton);
 
             ApplicationBarIconButton cancelSelectionBarButton = new ApplicationBarIconButton();
-            cancelSelectionBarButton.IconUri = new Uri("/Images/cancel.png", UriKind.Relative);
+            cancelSelectionBarButton.IconUri = new Uri("/Assets/cancel.png", UriKind.Relative);
             cancelSelectionBarButton.Text = "Cancel Selection";
             cancelSelectionBarButton.IsEnabled = false;
             cancelSelectionBarButton.Click += CancelSelectionBarButton_Click;
             ApplicationBar.Buttons.Add(cancelSelectionBarButton);
 
             ApplicationBarIconButton backBarButton = new ApplicationBarIconButton();
-            backBarButton.IconUri = new Uri("/Images/back.png", UriKind.Relative);
+            backBarButton.IconUri = new Uri("/Assets/back.png", UriKind.Relative);
             backBarButton.Text = "Back";
             backBarButton.IsEnabled = true;
             backBarButton.Click += BackToMainScreenBarButton_Click;
             ApplicationBar.Buttons.Add(backBarButton);
 
         }
+        #endregion Private Methods
 
         #region Private Event Handlers
         private void OnSelectedLocationChanged(object sender, RoutedEventArgs e)
@@ -87,23 +79,18 @@ namespace LocationBasedNotifications
                 Location selectedLocation = listbox.SelectedItem as Location;
                 if (selectedLocation != null)
                 {
-                    _model.SelectedItem = selectedLocation;
-                }
-            }
-        }
-        private void OnEnableAppBarButtons(object sender, PropertyChangedEventArgs e)
-        {
-            if (string.Equals(e.PropertyName,"SelectedItem",StringComparison.CurrentCultureIgnoreCase))
-            {
-                foreach (var button in ApplicationBar.Buttons)
-                {
-                    ApplicationBarIconButton castedButton = button as ApplicationBarIconButton;
-                    if (castedButton != null)
+                    _model.MyLocation = selectedLocation;
+
+                    foreach (var button in ApplicationBar.Buttons)
                     {
-                        if (!string.Equals(castedButton.Text,"New Location",StringComparison.CurrentCultureIgnoreCase) &&
-                            !string.Equals(castedButton.Text, "Back", StringComparison.CurrentCultureIgnoreCase))
+                        ApplicationBarIconButton castedButton = button as ApplicationBarIconButton;
+                        if (castedButton != null)
                         {
-                            castedButton.IsEnabled = _model.SelectedItem != null;
+                            if (!string.Equals(castedButton.Text, "New Location", StringComparison.CurrentCultureIgnoreCase) &&
+                                !string.Equals(castedButton.Text, "Back", StringComparison.CurrentCultureIgnoreCase))
+                            {
+                                castedButton.IsEnabled = _model.MyLocation != null;
+                            }
                         }
                     }
                 }
@@ -114,18 +101,13 @@ namespace LocationBasedNotifications
             MessageBoxResult answer = MessageBox.Show("Delete selected location?", "Delete location", MessageBoxButton.OKCancel);
             if (answer == MessageBoxResult.OK)
             {
-                if (_model.SelectedItem != null)
-                {
-                    _repository.RemoveItem(_model.SelectedItem);
-                    _model.MyLocations.Remove(_model.SelectedItem);
-                    _model.SelectedItem = null;
-                }
+                _model.RemoveLocation();
+                _model.MyLocation = null;
             }
         }
         private void CancelSelectionBarButton_Click(object sender, EventArgs e)
         {
-            _model.SelectedItem = null;
-            //MyLocationsListBox.SelectedItem = null;
+            _model.MyLocation = null;
         }
         private void CreateLocationButton_Click(object sender, EventArgs e)
         {
@@ -135,20 +117,6 @@ namespace LocationBasedNotifications
         {
             NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
         }
-        #endregion Public Event Handlers
-
-        private void PopulateModelWithStorageData()
-        {
-            IEnumerable<Location> locations = _repository.GetInMemoryItems();
-            if (locations != null)
-            {
-                foreach (var location in locations)
-                {
-                    _model.MyLocations.Add(location);
-                }
-            }
-        }
-        #endregion Private Methods
-
+        #endregion Private Event Handlers
     }
 }

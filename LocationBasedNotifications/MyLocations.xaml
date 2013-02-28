@@ -29,7 +29,7 @@
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <StackPanel>
-                <ListBox x:Name="MyLocationsListBox" ItemsSource="{Binding Path=MyLocations}" SelectionChanged="OnSelectedLocationChanged" SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}"
+                <ListBox x:Name="MyLocationsListBox" ItemsSource="{Binding Path=MyLocations}" SelectionChanged="OnSelectedLocationChanged" SelectedItem="{Binding Path=MyLocation, Mode=TwoWay}"
                          FontSize="{StaticResource PhoneFontSizeLarge}" Margin="10,0,0,0">
                     <ListBox.ItemTemplate>
                         <DataTemplate>

@@ -81,22 +81,25 @@ namespace LocationBasedNotifications
         private void InitializeDatabase()
         {
             _localDB = new ReminderDataContext(Constants.DBConnectionString);
-            if (_localDB.DatabaseExists())
+            if (!_localDB.DatabaseExists())
+            {
+                _localDB.CreateDatabase();
+            }
+            else
             {
                 _localDB.DeleteDatabase();
+                _localDB.CreateDatabase();
             }
-            _localDB.CreateDatabase();
 
             //seed the database with inital required data
             //like statuses
             if (_localDB.ReminderStatuses != null)
             {
-
                 List<ReminderStatus> statuses = new List<ReminderStatus>()
                 {
-                    new ReminderStatus(1,"All"),
                     new ReminderStatus(2,"Active"),
-                    new ReminderStatus(3,"Inactive")
+                    new ReminderStatus(3,"Inactive"),
+                    new ReminderStatus(1,"All")
                 };
                 _localDB.ReminderStatuses.InsertAllOnSubmit<ReminderStatus>(statuses);                
                 _localDB.SubmitChanges();

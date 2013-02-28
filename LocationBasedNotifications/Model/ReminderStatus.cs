@@ -44,5 +44,45 @@ namespace LocationBasedNotifications
         }
         #endregion Constructors
 
+        #region Overrides
+        public override bool Equals(object obj)
+        {
+            if(obj == null)
+            {
+                return false;
+            }
+
+            if (this.GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            if (!Object.ReferenceEquals(this, obj))
+            {
+                return false;
+            }
+
+            ReminderStatus other = obj as ReminderStatus;
+
+            return this.ReminderStatusId == other.ReminderStatusId &&
+                this.Value == other.Value;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = 17;
+            unchecked
+            {
+                hash = hash * 23 + ReminderStatusId.GetHashCode();
+                if (Value != null)
+                {
+                    hash = hash * 23 + Value.GetHashCode();
+                }
+            }
+            return hash;
+        }
+
+        #endregion Overrides
+
     }
 }

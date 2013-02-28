@@ -18,19 +18,14 @@ namespace LocationBasedNotifications
     public partial class CreateReminder : PhoneApplicationPage
     {
         #region Private Members
-        private Location _model;
-        private IRepository<Location> _repository; 
+        private LocationViewModel _model;
         #endregion Private Members
 
         #region Constructors
-        public CreateReminder() : this((new LocalStorageRepository()))
-        {
-        }
-        public CreateReminder(IRepository<Location> repository)
+        public CreateReminder()
         {
             InitializeComponent();
-            _model = new Location();
-            _repository = repository;
+            _model = new LocationViewModel();
             this.DataContext = _model;
         }
         #endregion Constructors
@@ -58,17 +53,17 @@ namespace LocationBasedNotifications
                 Geoposition currentPosition = await currentAsyncOperation;
                 if (currentPosition != null && currentPosition.Coordinate != null)
                 {
-                    _model.Latitude = currentPosition.Coordinate.Latitude;
-                    _model.Longitude = currentPosition.Coordinate.Longitude;
+
+                    _model.MyLocation.Latitude = currentPosition.Coordinate.Latitude;
+                    _model.MyLocation.Longitude = currentPosition.Coordinate.Longitude;
+
                 }
             }            
         }
         private void CreateLocationButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_repository.AddItem(_model))
-            {
-                NavigationService.Navigate(new Uri(string.Format("/MyLocations.xaml?locationID={0}",_model.LocationId), UriKind.Relative));
-            }
+            _model.SaveMyLocation();
+            NavigationService.Navigate(new Uri(string.Format("/MyLocations.xaml?locationID={0}", _model.MyLocation.LocationId), UriKind.Relative));
         }
         #endregion Button Handlers
     }

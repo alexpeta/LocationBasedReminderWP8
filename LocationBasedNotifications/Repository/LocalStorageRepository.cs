@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LocationBasedNotifications.Repository
 {
-    public class LocalStorageRepository : IRepository<Location>
+    public class LocalStorageRepository : IRepository
     {
         #region Private Members
         private ReminderDataContext _db;
@@ -21,7 +21,7 @@ namespace LocationBasedNotifications.Repository
         #endregion Constructors
 
         #region IRepository
-        public IEnumerable<Location> GetInMemoryItems()
+        public IEnumerable<Location> GetLocationsList()
         {
             List<Location> result = null;
 
@@ -33,7 +33,7 @@ namespace LocationBasedNotifications.Repository
             return result;
         }
 
-        public bool AddItem(Location itemToAdd)
+        public bool AddLocation(Location itemToAdd)
         {
             if (itemToAdd == null)
             {
@@ -53,7 +53,7 @@ namespace LocationBasedNotifications.Repository
             return true;
         }
 
-        public bool RemoveItem(Location itemToRemove)
+        public bool RemoveLocation(Location itemToRemove)
         {
             if (itemToRemove == null)
             {
@@ -80,13 +80,9 @@ namespace LocationBasedNotifications.Repository
             return result;
         }
 
-        public void Save(IEnumerable<Location> list)
-        {
-            throw new NotImplementedException();
-        }
         #endregion IRepository
 
-        public List<Reminder> GetRemindersList()
+        public IEnumerable<Reminder> GetRemindersList()
         {
             List<Reminder> result = null;
 
@@ -98,5 +94,55 @@ namespace LocationBasedNotifications.Repository
             return result;
         }
 
+
+        public ReminderStatus GetStatusById(int id)
+        {
+            ReminderStatus result = null;
+            if (_db.ReminderStatuses != null)
+            {
+                result = _db.ReminderStatuses.SingleOrDefault(s => s.ReminderStatusId == id);
+            }
+            return result;
+        }
+
+
+        public void Save()
+        {
+            _db.SubmitChanges();
+        }
+
+        public void AddReminder(Reminder reminder)
+        {
+            if (reminder != null)
+            {
+                _db.Reminders.InsertOnSubmit(reminder);
+            }
+        }
+
+
+        public IEnumerable<ReminderStatus> GetReminderStatusesList()
+        {
+            List<ReminderStatus> result = null;
+
+            if (_db.Locations != null)
+            {
+                result = _db.ReminderStatuses.ToList();
+            }
+
+            return result;
+        }
+
+
+        public IEnumerable<Reminder> GetRemindersByStatusId(int statusId)
+        {
+            List<Reminder> result = null;
+
+            if (_db.Locations != null)
+            {
+                result = _db.Reminders.Where(r=>r.ReminderStatusId == statusId).ToList();
+            }
+
+            return result;
+        }
     }
 }

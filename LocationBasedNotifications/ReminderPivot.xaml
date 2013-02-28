@@ -17,6 +17,37 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <!--Pivot Control-->
         <phone:Pivot Title="my reminders" x:Name="RemindersPivotHolder">
+            <phone:PivotItem Header="Active">
+                <Grid>
+                    <ListBox x:Name="ActiveRemindersListBox" ItemsSource="{Binding ActiveReminders}">
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"></TextBlock>
+                        </DataTemplate>
+                    </ListBox>
+                </Grid>
+            </phone:PivotItem>
+            
+            
+            <phone:PivotItem Header="Inactive">
+                <Grid>
+                    <ListBox x:Name="InactiveRemindersListBox" ItemsSource="{Binding InctiveReminders}">
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"></TextBlock>
+                        </DataTemplate>
+                    </ListBox>
+                </Grid>
+            </phone:PivotItem>
+            
+            
+            <phone:PivotItem Header="All">
+                <Grid>
+                    <ListBox x:Name="AllRemindersListBox" ItemsSource="{Binding AllReminders}">
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"></TextBlock>
+                        </DataTemplate>
+                    </ListBox>
+                </Grid>
+            </phone:PivotItem>            
         </phone:Pivot>
     </Grid>
     

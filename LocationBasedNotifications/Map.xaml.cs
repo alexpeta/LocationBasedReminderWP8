@@ -17,7 +17,7 @@ namespace LocationBasedNotifications
     {
         #region Private Members
         private Location _model;
-        private IRepository<Location> _repository;
+        private IRepository _repository;
         #endregion Private Members
 
         #region Constructors
@@ -25,7 +25,7 @@ namespace LocationBasedNotifications
         {
         }
 
-        public Map(IRepository<Location> repository)
+        public Map(IRepository repository)
         {
             InitializeComponent();
             _model = new Location();
@@ -47,7 +47,7 @@ namespace LocationBasedNotifications
                     _model = _repository.GetItemById(passedParameter);
                     GeoCoordinate coordonates = new GeoCoordinate(_model.Latitude, _model.Longitude);
                     MyMap.Center = coordonates;
-                    MyMap.ZoomLevel = 20;
+                    MyMap.ZoomLevel = 10;
                 }
             }
             catch (Exception)

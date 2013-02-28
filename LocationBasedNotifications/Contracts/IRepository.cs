@@ -7,13 +7,25 @@ using System.Threading.Tasks;
 
 namespace LocationBasedNotifications.Contracts
 {
-    public interface IRepository<T>
-        where T : BaseModel
+    public interface IRepository
     {
-        T GetItemById(int id);
-        IEnumerable<T> GetInMemoryItems();
-        bool AddItem(T itemToAdd);
-        bool RemoveItem(T itemToRemove);
-        void Save(IEnumerable<T> list);
+        #region Location Methods
+        Location GetItemById(int id);
+        IEnumerable<Location> GetLocationsList();
+        bool AddLocation(Location itemToAdd);
+        bool RemoveLocation(Location itemToRemove);
+        void Save();
+        #endregion Location Methods
+
+        #region Reminder Methods
+        IEnumerable<Reminder> GetRemindersList();
+        IEnumerable<Reminder> GetRemindersByStatusId(int statusId);
+        void AddReminder(Reminder reminder);
+        #endregion Reminder Methods
+
+        #region Status Methods
+        ReminderStatus GetStatusById(int id);
+        IEnumerable<ReminderStatus> GetReminderStatusesList();
+        #endregion Status Methods
     }
 }

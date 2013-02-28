@@ -21,24 +21,24 @@ namespace LocationBasedNotifications
         public MainPage()
         {
             InitializeComponent();
-        }
+        }   
 
         #region Button Handlers
-        private void CreateRemindersButtton_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService.Navigate(new Uri("/CreateLocation.xaml", UriKind.Relative));
-        }
-
         private void ViewLocationsButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new Uri("/MyLocations.xaml", UriKind.Relative));
         }
-        private void GOTO_Click_1(object sender, RoutedEventArgs e)
+        private void ManageReminderButton_Click(object sender, RoutedEventArgs e)
         {
-            //NavigationService.Navigate(new Uri("/Map.xaml?locationID=1", UriKind.Relative));
             NavigationService.Navigate(new Uri("/ReminderPivot.xaml", UriKind.Relative));
         }
+        private void ViewMapButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/Map.xaml", UriKind.Relative));
+        }
         #endregion Button Handlers
+
+
 
     }
 }

@@ -30,15 +30,15 @@
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <StackPanel Orientation="Vertical">
                 <TextBlock Text="Name:"></TextBlock>
-                <TextBox x:Name="NameTextbox" Height="70" Text="{Binding Path=Name, Mode=TwoWay}" />
+                <TextBox x:Name="NameTextbox" Height="70" Text="{Binding Path=MyLocation.Name, Mode=TwoWay}" />
                 <StackPanel>
                     <TextBlock Text="Coordinates:"></TextBlock>
                     <Button x:Name="GetMyLocationButton" Content="use my current location" Click="GetMyLocationButton_Click"></Button>
-                    <TextBlock x:Name="LatitudeCoordinate" Text="{Binding Path=Latitude, Mode=TwoWay}" />
-                    <TextBlock x:Name="LongitudeCoordinate" Text="{Binding Path=Longitude, Mode=TwoWay}"/>
+                    <TextBlock x:Name="LatitudeCoordinate" Text="{Binding Path=MyLocation.Latitude, Mode=TwoWay}" />
+                    <TextBlock x:Name="LongitudeCoordinate" Text="{Binding Path=MyLocation.Longitude, Mode=TwoWay}"/>
                 </StackPanel>
                 <TextBlock Text="Description:"></TextBlock>
-                <TextBox x:Name="DescriptionTextbox" Height="200" Text="{Binding Path=Description, Mode=TwoWay}"></TextBox>
+                <TextBox x:Name="DescriptionTextbox" Height="200" Text="{Binding Path=MyLocation.Description, Mode=TwoWay}"></TextBox>
                 <Button x:Name="CreateLocationButton" Content="Create" Click="CreateLocationButton_Click"></Button>
             </StackPanel>
         </Grid>

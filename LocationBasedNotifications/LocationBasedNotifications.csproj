@@ -127,8 +127,8 @@
     <Compile Include="Repository\ReminderDataContext.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ViewModels\LocationsViewModel.cs" />
-    <Compile Include="ViewModels\NotificationsViewModel.cs" />
+    <Compile Include="ViewModels\LocationViewModel.cs" />
+    <Compile Include="ViewModels\ReminderViewModel.cs" />
     <Compile Include="MyLocations.xaml.cs">
       <DependentUpon>MyLocations.xaml</DependentUpon>
     </Compile>
@@ -138,6 +138,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -193,10 +194,10 @@
     <Content Include="Assets\Tiles\IconicTileSmall.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Images\back.png" />
-    <Content Include="Images\cancel.png" />
-    <Content Include="Images\delete.png" />
-    <Content Include="Images\new.png" />
+    <Content Include="Assets\back.png" />
+    <Content Include="Assets\cancel.png" />
+    <Content Include="Assets\delete.png" />
+    <Content Include="Assets\new.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
