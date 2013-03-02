@@ -16,13 +16,20 @@
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <!--Pivot Control-->
-        <phone:Pivot Title="my reminders" x:Name="RemindersPivotHolder">
+        <phone:Pivot Title="my reminders" x:Name="RemindersPivotHolder" SelectionChanged="OnSelectedPivotItemChanged">
             <phone:PivotItem Header="Active">
                 <Grid>
-                    <ListBox x:Name="ActiveRemindersListBox" ItemsSource="{Binding ActiveReminders}">
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}"></TextBlock>
-                        </DataTemplate>
+                    <ListBox x:Name="ActiveRemindersListBox" ItemsSource="{Binding ActiveReminders}" SelectionChanged="OnSelectedLocationChanged"
+                             HorizontalContentAlignment="Stretch">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Name}" FontSize="36"></TextBlock>
+                                    <TextBlock Text="{Binding Path=Location.Name, Mode=TwoWay}" Margin="30,0,0,0"></TextBlock>
+                                    <TextBlock Text="{Binding Path=Distance, Mode=TwoWay}" Margin="30,0,0,0"></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
                     </ListBox>
                 </Grid>
             </phone:PivotItem>
@@ -30,24 +37,20 @@
             
             <phone:PivotItem Header="Inactive">
                 <Grid>
-                    <ListBox x:Name="InactiveRemindersListBox" ItemsSource="{Binding InctiveReminders}">
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}"></TextBlock>
-                        </DataTemplate>
+                    <ListBox x:Name="InactiveRemindersListBox" ItemsSource="{Binding InctiveReminders}"
+                             HorizontalContentAlignment="Stretch">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Name}" FontSize="36"></TextBlock>
+                                    <TextBlock Text="{Binding Path=Location.Name}" Margin="30,0,0,0"></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
                     </ListBox>
                 </Grid>
             </phone:PivotItem>
-            
-            
-            <phone:PivotItem Header="All">
-                <Grid>
-                    <ListBox x:Name="AllRemindersListBox" ItemsSource="{Binding AllReminders}">
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}"></TextBlock>
-                        </DataTemplate>
-                    </ListBox>
-                </Grid>
-            </phone:PivotItem>            
+                   
         </phone:Pivot>
     </Grid>
     

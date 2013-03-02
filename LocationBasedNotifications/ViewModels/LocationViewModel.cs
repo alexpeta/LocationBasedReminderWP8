@@ -44,12 +44,19 @@ namespace LocationBasedNotifications
         {
             MyLocations = new ObservableCollection<Location>();
             MyLocation = new Location();
-            PopulateModelWithStorageData();
         }
         #endregion Constructors
 
         #region Private Methods
-        private void PopulateModelWithStorageData()
+        #endregion Private Methods
+
+
+        #region Public Methods
+        public void LoadLocationForEdit(int locationId)
+        {
+            MyLocation = base.Repository.GetLocationById(locationId);
+        }
+        public void PopulateModelWithStorageData()
         {
             IEnumerable<Location> locations = base.Repository.GetLocationsList();
             if (locations != null)
@@ -60,10 +67,6 @@ namespace LocationBasedNotifications
                 }
             }
         }
-        #endregion Private Methods
-
-
-        #region Public Methods
         public void SaveMyLocation()
         {
             if (MyLocation != null)

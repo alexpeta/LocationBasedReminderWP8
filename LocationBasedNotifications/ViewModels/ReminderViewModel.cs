@@ -1,10 +1,12 @@
-﻿using System;
+﻿using LocationBasedNotifications.Logic;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Devices.Geolocation;
 
 namespace LocationBasedNotifications
 {
@@ -13,9 +15,9 @@ namespace LocationBasedNotifications
         #region Private Members
         private ObservableCollection<Reminder> _activeReminders;
         private ObservableCollection<Reminder>  _inactiveReminders;
-        private ObservableCollection<Reminder> _allReminders;
-
         private ObservableCollection<ReminderStatus> _statuses;
+
+        private Reminder _selectedReminder;
         #endregion Private Members
 
         #region Public Properties
@@ -29,18 +31,28 @@ namespace LocationBasedNotifications
             get { return _inactiveReminders; }
             set { _inactiveReminders = value; }
         }
-        public ObservableCollection<Reminder> AllReminders
-        {
-            get { return _allReminders; }
-            set { _allReminders = value; }
-        }
-
         public ObservableCollection<ReminderStatus> Statuses
         {
             get { return _statuses; }
             set { _statuses = value; }
         }
-
+        public Reminder SelectedReminder
+        {
+            get
+            {
+                return _selectedReminder;
+            }
+            set
+            {
+                if (_selectedReminder == value)
+                {
+                    return;
+                }
+                NotifyPropertyChanging("SelectedReminder");
+                _selectedReminder = value;
+                NotifyPropertyChanged("SelectedReminder");
+            }
+        }
         #endregion Public Properties
 
         #region Constructors
@@ -49,13 +61,58 @@ namespace LocationBasedNotifications
         {
             ActiveReminders = new ObservableCollection<Reminder>();
             InctiveReminders = new ObservableCollection<Reminder>();
-            AllReminders = new ObservableCollection<Reminder>();
             Statuses = new ObservableCollection<ReminderStatus>();
+            SelectedReminder = null;
 
             InsertDummyData();
-            LoadDataFromRepository();
+            LoadDataAsyncFromRepository();
         }
         #endregion Constructors
+
+        #region Public Methods
+        public void UpdateRemindersDistance(Geocoordinate currentGeocoordinate)
+        {
+            if (ActiveReminders != null)
+            {
+                Location currentLocation = new Location();
+                currentLocation.Longitude = currentGeocoordinate.Longitude;
+                currentLocation.Latitude = currentGeocoordinate.Latitude;
+
+                foreach (var reminder in ActiveReminders)
+                {
+                    DistanceHelper distanceHelper = new DistanceHelper(currentLocation, reminder.Location);
+                    reminder.DistanceToLocation = distanceHelper.Distance;
+                }
+            }
+        }
+        public void DeactivateSelectedItem()
+        {            
+            if (SelectedReminder != null)
+            {
+                ActiveReminders.Remove(SelectedReminder);
+
+                Reminder copyOfSelectedReminder = SelectedReminder.DeepCopy();
+                copyOfSelectedReminder.Status = Statuses.FirstOrDefault(s => string.Equals(s.Value, "Inactive", StringComparison.CurrentCultureIgnoreCase));
+                InctiveReminders.Add(copyOfSelectedReminder);
+               
+                SelectedReminder = null;
+            }
+        }
+        public void ActivateSelectedItem()
+        {
+            if (SelectedReminder != null)
+            {
+                InctiveReminders.Remove(SelectedReminder);
+
+                Reminder copyOfSelectedReminder = SelectedReminder.DeepCopy();
+                copyOfSelectedReminder.Status = Statuses.FirstOrDefault(s => string.Equals(s.Value, "Active", StringComparison.CurrentCultureIgnoreCase));
+                ActiveReminders.Add(copyOfSelectedReminder);
+
+                SelectedReminder = null;
+            }
+        }
+
+        #endregion Public Methods
 
         #region Private Methods
         private void InsertDummyData()
@@ -67,16 +124,18 @@ namespace LocationBasedNotifications
 
 
 
-            ReminderStatus active = base.Repository.GetStatusById(2);
-            ReminderStatus inactive = base.Repository.GetStatusById(3);
+            ReminderStatus active = base.Repository.GetStatusById(1);
+            ReminderStatus inactive = base.Repository.GetStatusById(2);
 
             Reminder reminder = new Reminder();
             reminder.Status = active;
+            reminder.ReminderStatusId = active.ReminderStatusId;
             reminder.Location = location;
             reminder.Name = "My first Reminder";
 
             Reminder second = new Reminder();
             second.Status = inactive;
+            second.ReminderStatusId = inactive.ReminderStatusId;
             second.Location = location;
             second.Name = "Second inactive reminder";
 
@@ -87,15 +146,14 @@ namespace LocationBasedNotifications
             base.Repository.Save();
         }
 
-        private void LoadDataFromRepository()
+        private async void LoadDataAsyncFromRepository()
         {
             if (base.Repository != null)
             {
                 Statuses = new ObservableCollection<ReminderStatus>(base.Repository.GetReminderStatusesList());
 
-                AllReminders = new ObservableCollection<Reminder>(base.Repository.GetRemindersList());
-
-                IEnumerable<Reminder> activeList = AllReminders.Where(r => r.Status != null && r.Status.ReminderStatusId == 2);
+                //load visible active sync
+                IEnumerable<Reminder> activeList = Repository.GetRemindersByStatusId(1);
                 if (activeList != null)
                 {
                     foreach (var reminder in activeList)
@@ -104,47 +162,33 @@ namespace LocationBasedNotifications
                     }
                 }
 
-                IEnumerable<Reminder> inactiveList = AllReminders.Where(r => r.Status != null && r.Status.ReminderStatusId == 3);
-                if (inactiveList != null)
-                {
-                    foreach (var reminder in inactiveList)
-                    {
-                        InctiveReminders.Add(reminder);
-                    }
-                }
+                //load inactive async
+                IEnumerable<Reminder> temporaryInactiveList = null;
 
-                //throwing ex
-                /*
-                Action action = () =>
+                Action getInactiveRemindersAction = () =>
                     {
-                        Thread.Sleep(2000);
-                        
-                        IEnumerable<Reminder> activeList = AllReminders.Where(r => r.Status != null && r.Status.ReminderStatusId == 2);
-                        if (activeList != null)
+                        temporaryInactiveList = Repository.GetRemindersByStatusId(2);
+                    };
+
+                await Task.Factory.StartNew(getInactiveRemindersAction);
+
+                Action refreshUI = () =>
+                    {
+                        if (temporaryInactiveList != null)
                         {
-                            foreach (var reminder in activeList)
-                            {
-                                ActiveReminders.Add(reminder);
-                            }
-                        }
- 
-                        IEnumerable<Reminder> inactiveList = AllReminders.Where(r => r.Status != null && r.Status.ReminderStatusId == 3);
-                        if (inactiveList != null)
-                        {
-                            foreach (var reminder in inactiveList)
+                            foreach (var reminder in temporaryInactiveList)
                             {
                                 InctiveReminders.Add(reminder);
                             }
                         }
-
                     };
 
-                Task t = Task.Factory.StartNew(action);
-                 */
-
+                System.Windows.Deployment.Current.Dispatcher.BeginInvoke(refreshUI);
             }
 
         }
         #endregion Private Methods
+
+
     }
 }

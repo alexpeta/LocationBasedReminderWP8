@@ -33,13 +33,12 @@ namespace LocationBasedNotifications
         private Binary _version;
         
         #region Constructors
-        public ReminderStatus() : this(0,string.Empty)
+        public ReminderStatus() : this(string.Empty)
         {
                 
         }
-        public ReminderStatus(int reminderId,string value)
+        public ReminderStatus(string value)
         {
-            ReminderStatusId = reminderId;
             Value = value;
         }
         #endregion Constructors

@@ -32,7 +32,6 @@ namespace LocationBasedNotifications.Repository
 
             return result;
         }
-
         public bool AddLocation(Location itemToAdd)
         {
             if (itemToAdd == null)
@@ -52,7 +51,6 @@ namespace LocationBasedNotifications.Repository
 
             return true;
         }
-
         public bool RemoveLocation(Location itemToRemove)
         {
             if (itemToRemove == null)
@@ -72,16 +70,12 @@ namespace LocationBasedNotifications.Repository
 
             return true;
         }
-
-        public Location GetItemById(int id)
+        public Location GetLocationById(int id)
         {
             Location result = _db.Locations.FirstOrDefault(l => l.LocationId == id);
 
             return result;
         }
-
-        #endregion IRepository
-
         public IEnumerable<Reminder> GetRemindersList()
         {
             List<Reminder> result = null;
@@ -93,8 +87,6 @@ namespace LocationBasedNotifications.Repository
 
             return result;
         }
-
-
         public ReminderStatus GetStatusById(int id)
         {
             ReminderStatus result = null;
@@ -104,13 +96,6 @@ namespace LocationBasedNotifications.Repository
             }
             return result;
         }
-
-
-        public void Save()
-        {
-            _db.SubmitChanges();
-        }
-
         public void AddReminder(Reminder reminder)
         {
             if (reminder != null)
@@ -118,8 +103,6 @@ namespace LocationBasedNotifications.Repository
                 _db.Reminders.InsertOnSubmit(reminder);
             }
         }
-
-
         public IEnumerable<ReminderStatus> GetReminderStatusesList()
         {
             List<ReminderStatus> result = null;
@@ -131,18 +114,22 @@ namespace LocationBasedNotifications.Repository
 
             return result;
         }
-
-
         public IEnumerable<Reminder> GetRemindersByStatusId(int statusId)
         {
             List<Reminder> result = null;
 
             if (_db.Locations != null)
             {
-                result = _db.Reminders.Where(r=>r.ReminderStatusId == statusId).ToList();
+                result = _db.Reminders.Where(r => r.ReminderStatusId == statusId).ToList();
             }
 
             return result;
         }
+        public void Save()
+        {
+            _db.SubmitChanges();
+        }
+        #endregion IRepository
+
     }
 }

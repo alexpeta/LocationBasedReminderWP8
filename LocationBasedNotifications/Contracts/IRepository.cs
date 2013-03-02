@@ -10,11 +10,10 @@ namespace LocationBasedNotifications.Contracts
     public interface IRepository
     {
         #region Location Methods
-        Location GetItemById(int id);
+        Location GetLocationById(int id);
         IEnumerable<Location> GetLocationsList();
         bool AddLocation(Location itemToAdd);
         bool RemoveLocation(Location itemToRemove);
-        void Save();
         #endregion Location Methods
 
         #region Reminder Methods
@@ -27,5 +26,9 @@ namespace LocationBasedNotifications.Contracts
         ReminderStatus GetStatusById(int id);
         IEnumerable<ReminderStatus> GetReminderStatusesList();
         #endregion Status Methods
+
+        #region Generic Methods
+        void Save();
+        #endregion 
     }
 }

@@ -16,10 +16,11 @@ c:\users\alex\documents\visual studio 2012\Projects\LocationBasedNotifications\L
 c:\users\alex\documents\visual studio 2012\Projects\LocationBasedNotifications\LocationBasedNotifications\obj\Debug\LocationBasedNotifications.dll
 c:\users\alex\documents\visual studio 2012\Projects\LocationBasedNotifications\LocationBasedNotifications\obj\Debug\LocationBasedNotifications.pdb
 c:\users\alex\documents\visual studio 2012\Projects\LocationBasedNotifications\LocationBasedNotifications\obj\Debug\XapCacheFile.xml
-c:\users\alex\documents\visual studio 2012\Projects\LocationBasedNotifications\LocationBasedNotifications\obj\Debug\CreateLocation.g.cs
 c:\users\alex\documents\visual studio 2012\Projects\LocationBasedNotifications\LocationBasedNotifications\obj\Debug\MyLocations.g.cs
 C:\Users\Alex\documents\visual studio 2012\Projects\LocationBasedNotifications\LocationBasedNotifications\Bin\Debug\Microsoft.Phone.Controls.Toolkit.dll
 C:\Users\Alex\documents\visual studio 2012\Projects\LocationBasedNotifications\LocationBasedNotifications\obj\Debug\LocationBasedNotifications.csprojResolveAssemblyReference.cache
 C:\Users\Alex\documents\visual studio 2012\Projects\LocationBasedNotifications\LocationBasedNotifications\obj\Debug\Map.g.cs
 C:\Users\Alex\documents\visual studio 2012\Projects\LocationBasedNotifications\LocationBasedNotifications\Bin\Debug\Microsoft.Phone.Controls.dll
 C:\Users\Alex\documents\visual studio 2012\Projects\LocationBasedNotifications\LocationBasedNotifications\obj\Debug\ReminderPivot.g.cs
+C:\Users\Alex\documents\visual studio 2012\Projects\LocationBasedNotifications\LocationBasedNotifications\obj\Debug\CreateEditLocation.g.cs
+C:\Users\Alex\documents\visual studio 2012\Projects\LocationBasedNotifications\LocationBasedNotifications\obj\Debug\CreateReminder.g.cs

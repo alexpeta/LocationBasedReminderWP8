@@ -94,11 +94,16 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Contracts\IRepository.cs" />
-    <Compile Include="CreateLocation.xaml.cs">
-      <DependentUpon>CreateLocation.xaml</DependentUpon>
+    <Compile Include="CreateEditLocation.xaml.cs">
+      <DependentUpon>CreateEditLocation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CreateReminder.xaml.cs">
+      <DependentUpon>CreateReminder.xaml</DependentUpon>
     </Compile>
     <Compile Include="Enums\Constants.cs" />
+    <Compile Include="Helpers\HelperMethods.cs" />
     <Compile Include="LocalizedStrings.cs" />
+    <Compile Include="Logic\DistanceHelper.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -145,7 +150,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
-    <Page Include="CreateLocation.xaml">
+    <Page Include="CreateEditLocation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CreateReminder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -168,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="LocationBasedNotifications_2013_02_25_22_00_58.sap" />
+    <None Include="LocationBasedNotifications_2013_03_01_08_36_51.sap" />
     <None Include="packages.config" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
@@ -179,6 +189,8 @@
     <Content Include="Assets\ApplicationIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\questionmark.png" />
+    <Content Include="Assets\edit.png" />
     <Content Include="Assets\Tiles\FlipCycleTileLarge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -198,6 +210,7 @@
     <Content Include="Assets\cancel.png" />
     <Content Include="Assets\delete.png" />
     <Content Include="Assets\new.png" />
+    <Content Include="Assets\transport.play.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />

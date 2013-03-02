@@ -15,12 +15,10 @@ namespace LocationBasedNotifications
         private int _reminderId;
         private int _accurecy;
         private string _name;
-                
-        //FK keys
+        private double _distanceToLocation;
+        private int _locationId;
         private int _reminderStatusId;
         private EntityRef<ReminderStatus> _status;
-
-        private int _locationId;
         private EntityRef<Location> _location;
         #endregion Private Members
 
@@ -39,14 +37,51 @@ namespace LocationBasedNotifications
         public int Accurecy
         {
             get { return _accurecy; }
-            set { _accurecy = value; }
+            set 
+            {
+                if (_accurecy == value)
+                {
+                    return;
+                }
+
+                NotifyPropertyChanging("Accurecy");
+                _accurecy = value;
+                NotifyPropertyChanged("Accurecy");
+            }
         }
 
         [Column]
         public string Name
         {
             get { return _name; }
-            set { _name = value; }
+            set 
+            {
+                if (_name == value)
+                {
+                    return;
+                }
+
+                NotifyPropertyChanging("Name");
+                _name = value;
+                NotifyPropertyChanged("Name");
+            }
+        }
+
+        //this is just for binding not db column
+        public double DistanceToLocation
+        {
+            get { return _distanceToLocation; }
+            set 
+            {
+                if (_distanceToLocation == value)
+                {
+                    return;
+                }
+
+                NotifyPropertyChanging("DistanceToLocation");
+                _distanceToLocation = value;
+                NotifyPropertyChanged("DistanceToLocation");
+            }
         }
 
         [Column]
@@ -102,7 +137,24 @@ namespace LocationBasedNotifications
             }
             return result;
         }
+
         #endregion Overrides
 
+        #region Public Methods
+        public Reminder DeepCopy()
+        {
+            Reminder copy = new Reminder();
+            copy.ReminderId = ReminderId;
+            copy.Accurecy = Accurecy;
+            copy.Name = Name;
+            copy.DistanceToLocation = DistanceToLocation;
+            copy.LocationId = LocationId;
+            copy.Location = Location;
+            copy.Status = Status;
+            copy.ReminderStatusId = ReminderStatusId;
+
+            return copy;
+        }
+        #endregion Public Methods
     }
 }

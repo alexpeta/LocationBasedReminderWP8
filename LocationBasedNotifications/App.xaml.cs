@@ -97,9 +97,8 @@ namespace LocationBasedNotifications
             {
                 List<ReminderStatus> statuses = new List<ReminderStatus>()
                 {
-                    new ReminderStatus(2,"Active"),
-                    new ReminderStatus(3,"Inactive"),
-                    new ReminderStatus(1,"All")
+                    new ReminderStatus("Active"),
+                    new ReminderStatus("Inactive")
                 };
                 _localDB.ReminderStatuses.InsertAllOnSubmit<ReminderStatus>(statuses);                
                 _localDB.SubmitChanges();

@@ -24,8 +24,11 @@ namespace LocationBasedNotifications
         public MyLocations()
         {
             InitializeComponent();
-            _model = new LocationViewModel();
             CreateAppBar();
+
+            _model = new LocationViewModel();
+            _model.PopulateModelWithStorageData();
+
             this.DataContext = _model;
         }
         #endregion Constructors
@@ -53,12 +56,12 @@ namespace LocationBasedNotifications
             deleteLocationBarButton.Click += DeleteLocationBarButton_Click;
             ApplicationBar.Buttons.Add(deleteLocationBarButton);
 
-            ApplicationBarIconButton cancelSelectionBarButton = new ApplicationBarIconButton();
-            cancelSelectionBarButton.IconUri = new Uri("/Assets/cancel.png", UriKind.Relative);
-            cancelSelectionBarButton.Text = "Cancel Selection";
-            cancelSelectionBarButton.IsEnabled = false;
-            cancelSelectionBarButton.Click += CancelSelectionBarButton_Click;
-            ApplicationBar.Buttons.Add(cancelSelectionBarButton);
+            ApplicationBarIconButton editButton = new ApplicationBarIconButton();
+            editButton.IconUri = new Uri("/Assets/edit.png", UriKind.Relative);
+            editButton.Text = "Cancel Selection";
+            editButton.IsEnabled = false;
+            editButton.Click += EditLocationButton_Click;
+            ApplicationBar.Buttons.Add(editButton);
 
             ApplicationBarIconButton backBarButton = new ApplicationBarIconButton();
             backBarButton.IconUri = new Uri("/Assets/back.png", UriKind.Relative);
@@ -105,17 +108,25 @@ namespace LocationBasedNotifications
                 _model.MyLocation = null;
             }
         }
-        private void CancelSelectionBarButton_Click(object sender, EventArgs e)
-        {
-            _model.MyLocation = null;
-        }
         private void CreateLocationButton_Click(object sender, EventArgs e)
         {
-            NavigationService.Navigate(new Uri("/CreateLocation.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/CreateEditLocation.xaml", UriKind.Relative));
         }
+
         private void BackToMainScreenBarButton_Click(object sender, EventArgs e)
         {
             NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
+        }
+
+        private void EditLocationButton_Click(object sender, EventArgs e)
+        {
+            string selectedLocationId = string.Empty;
+            if (_model.MyLocation != null)
+            {
+                selectedLocationId = _model.MyLocation.LocationId.ToString();
+            }
+
+            NavigationService.Navigate(new Uri(string.Format("/CreateEditLocation.xaml?locationId={0}", selectedLocationId), UriKind.Relative));
         }
         #endregion Private Event Handlers
     }

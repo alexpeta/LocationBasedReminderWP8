@@ -74,7 +74,7 @@ namespace LocationBasedNotifications.Repository
         //    }
         //    IsolatedStorageSettings.ApplicationSettings[Constants.LBNLocations] = list;
         //}
-        public Location GetItemById(int id)
+        public Location GetLocationById(int id)
         {
             throw new NotImplementedException();
         }

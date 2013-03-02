@@ -44,7 +44,7 @@ namespace LocationBasedNotifications
 
                 if (_repository != null)
                 {
-                    _model = _repository.GetItemById(passedParameter);
+                    _model = _repository.GetLocationById(passedParameter);
                     GeoCoordinate coordonates = new GeoCoordinate(_model.Latitude, _model.Longitude);
                     MyMap.Center = coordonates;
                     MyMap.ZoomLevel = 10;
