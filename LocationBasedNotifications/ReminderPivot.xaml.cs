@@ -57,25 +57,10 @@ namespace LocationBasedNotifications
             deleteLocationBarButton.IsEnabled = false;
             deleteLocationBarButton.Click += DeleteReminderButton_Click;
             ApplicationBar.Buttons.Add(deleteLocationBarButton);
-
-            ApplicationBarIconButton cancelSelectionBarButton = new ApplicationBarIconButton();
-            cancelSelectionBarButton.IconUri = new Uri("/Assets/cancel.png", UriKind.Relative);
-            cancelSelectionBarButton.Text = "Cancel Selection";
-            cancelSelectionBarButton.IsEnabled = false;
-            cancelSelectionBarButton.Click += CancelSelectionButton_Click;
-            ApplicationBar.Buttons.Add(cancelSelectionBarButton);
-
-            ApplicationBarIconButton activateButton = new ApplicationBarIconButton();
-            activateButton.IconUri = new Uri("/Assets/transport.play.png", UriKind.Relative);
-            activateButton.Text = "Activate";
-            activateButton.IsEnabled = true;
-            ApplicationBar.Buttons.Add(activateButton);
         }
 
-
-
         #region Click Event Handlers
-        private void OnSelectedLocationChanged(object sender, RoutedEventArgs e)
+        private void OnSelectedReminderChanged(object sender, RoutedEventArgs e)
         {
             ListBox listbox = sender as ListBox;
             if (listbox != null)
@@ -90,8 +75,7 @@ namespace LocationBasedNotifications
                         ApplicationBarIconButton castedButton = button as ApplicationBarIconButton;
                         if (castedButton != null)
                         {
-                            if (!string.Equals(castedButton.Text, "New Location", StringComparison.CurrentCultureIgnoreCase) ||
-                                !string.Equals(castedButton.Text, "Refresh Distance",StringComparison.CurrentCultureIgnoreCase))
+                            if (!string.Equals(castedButton.Text, "New Location", StringComparison.CurrentCultureIgnoreCase))
                             {
                                 castedButton.IsEnabled = _model.SelectedReminder != null;
                             }
@@ -100,11 +84,6 @@ namespace LocationBasedNotifications
                 }
             }
         }
-        private void CancelSelectionButton_Click(object sender, EventArgs e)
-        {
-            _model.DeactivateSelectedItem();
-        }
-
         private void OnSelectedPivotItemChanged(object sender, SelectionChangedEventArgs e)
         {
             Pivot pivot = sender as Pivot;
@@ -124,26 +103,15 @@ namespace LocationBasedNotifications
                 }
             }
         }
-
-
         private void DeleteReminderButton_Click(object sender, EventArgs e)
         {
             throw new NotImplementedException();
         }
         private void CreateReminderButton_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            NavigationService.Navigate(new Uri("/CreateReminder.xaml", UriKind.Relative));
         }
-        //private async void CalculateDistanceButton_Click(object sender, EventArgs e)
-        //{
-        //    Geocoordinate currentGeocoordinate = await HelperMethods.GetCurrentLocation();
-        //    if (currentGeocoordinate != null)
-        //    {
-        //        _model.UpdateRemindersDistance(currentGeocoordinate);
-        //    }
-        //}
         #endregion Click Event Handlers
-
 
         #endregion  Private Methods
     }

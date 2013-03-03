@@ -76,6 +76,7 @@
                 <Button x:Name="ReminderPivotButton" Content="Manage Reminders" Click="ManageReminderButton_Click"></Button>
 
                 <Button x:Name="ViewMapButton" Content="Map" Click="ViewMapButton_Click"></Button>
+                <Button x:Name="LoadTestData" Content="Load Test Data" Click="LoadTestDataButton_Click"></Button>
             </StackPanel>
 
         </Grid>

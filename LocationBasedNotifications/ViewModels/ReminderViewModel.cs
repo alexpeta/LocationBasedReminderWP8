@@ -1,4 +1,5 @@
 ﻿using LocationBasedNotifications.Logic;
+using LocationBasedNotifications.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Windows.Devices.Geolocation;
 
 namespace LocationBasedNotifications
@@ -16,7 +18,7 @@ namespace LocationBasedNotifications
         private ObservableCollection<Reminder> _activeReminders;
         private ObservableCollection<Reminder>  _inactiveReminders;
         private ObservableCollection<ReminderStatus> _statuses;
-
+        private ICommand _activationCommand;
         private Reminder _selectedReminder;
         #endregion Private Members
 
@@ -53,6 +55,17 @@ namespace LocationBasedNotifications
                 NotifyPropertyChanged("SelectedReminder");
             }
         }
+        public ICommand ActivationCommand
+        {
+            get
+            {
+                return _activationCommand;
+            }
+            set
+            {
+                _activationCommand = value;
+            }
+        }
         #endregion Public Properties
 
         #region Constructors
@@ -64,7 +77,8 @@ namespace LocationBasedNotifications
             Statuses = new ObservableCollection<ReminderStatus>();
             SelectedReminder = null;
 
-            InsertDummyData();
+            ActivationCommand = new DelegateCommand(this.OnActivationCommand);
+
             LoadDataAsyncFromRepository();
         }
         #endregion Constructors
@@ -85,67 +99,35 @@ namespace LocationBasedNotifications
                 }
             }
         }
-        public void DeactivateSelectedItem()
-        {            
-            if (SelectedReminder != null)
-            {
-                ActiveReminders.Remove(SelectedReminder);
-
-                Reminder copyOfSelectedReminder = SelectedReminder.DeepCopy();
-                copyOfSelectedReminder.Status = Statuses.FirstOrDefault(s => string.Equals(s.Value, "Inactive", StringComparison.CurrentCultureIgnoreCase));
-                InctiveReminders.Add(copyOfSelectedReminder);
-               
-                SelectedReminder = null;
-            }
-        }
-        public void ActivateSelectedItem()
+        public void OnActivationCommand(object reminderId)
         {
-            if (SelectedReminder != null)
+            int castedReminderId = 0;
+            try
             {
-                InctiveReminders.Remove(SelectedReminder);
+                castedReminderId = Convert.ToInt32(reminderId);
+            }
+            catch (Exception)
+            {
+                castedReminderId = -1;
+            }
 
-                Reminder copyOfSelectedReminder = SelectedReminder.DeepCopy();
-                copyOfSelectedReminder.Status = Statuses.FirstOrDefault(s => string.Equals(s.Value, "Active", StringComparison.CurrentCultureIgnoreCase));
-                ActiveReminders.Add(copyOfSelectedReminder);
-
-                SelectedReminder = null;
+            if (castedReminderId != 0 && castedReminderId != -1)
+            {
+                if (ActiveReminders.Any(r => r.ReminderId == castedReminderId))
+                {
+                    Reminder reminder = ActiveReminders.FirstOrDefault(r=>r.ReminderId == castedReminderId);
+                    this.DeactivateSelectedItem(reminder);
+                }
+                else if (InctiveReminders.Any(r => r.ReminderId == castedReminderId))
+                {
+                    Reminder reminder = InctiveReminders.FirstOrDefault(r => r.ReminderId == castedReminderId);
+                    this.ActivateSelectedItem(reminder);
+                }                     
             }
         }
-
         #endregion Public Methods
 
         #region Private Methods
-        private void InsertDummyData()
-        {
-            Location location = new Location();
-            location.Name = "Home";
-            base.Repository.AddLocation(location);
-            base.Repository.Save();
-
-
-
-            ReminderStatus active = base.Repository.GetStatusById(1);
-            ReminderStatus inactive = base.Repository.GetStatusById(2);
-
-            Reminder reminder = new Reminder();
-            reminder.Status = active;
-            reminder.ReminderStatusId = active.ReminderStatusId;
-            reminder.Location = location;
-            reminder.Name = "My first Reminder";
-
-            Reminder second = new Reminder();
-            second.Status = inactive;
-            second.ReminderStatusId = inactive.ReminderStatusId;
-            second.Location = location;
-            second.Name = "Second inactive reminder";
-
-
-            base.Repository.AddReminder(reminder);
-            base.Repository.AddReminder(second);
-
-            base.Repository.Save();
-        }
-
         private async void LoadDataAsyncFromRepository()
         {
             if (base.Repository != null)
@@ -186,6 +168,29 @@ namespace LocationBasedNotifications
                 System.Windows.Deployment.Current.Dispatcher.BeginInvoke(refreshUI);
             }
 
+        }
+
+        private void DeactivateSelectedItem(Reminder reminder)
+        {
+            if (reminder != null)
+            {
+                ActiveReminders.Remove(reminder);
+
+                Reminder copyOfSelectedReminder = reminder.DeepCopy();
+                copyOfSelectedReminder.Status = Statuses.FirstOrDefault(s => string.Equals(s.Value, "Inactive", StringComparison.CurrentCultureIgnoreCase));
+                InctiveReminders.Add(copyOfSelectedReminder);
+            }
+        }
+        private void ActivateSelectedItem(Reminder reminder)
+        {
+            if (reminder != null)
+            {
+                InctiveReminders.Remove(reminder);
+
+                Reminder copyOfSelectedReminder = reminder.DeepCopy();
+                copyOfSelectedReminder.Status = Statuses.FirstOrDefault(s => string.Equals(s.Value, "Active", StringComparison.CurrentCultureIgnoreCase));
+                ActiveReminders.Add(copyOfSelectedReminder);
+            }
         }
         #endregion Private Methods
 
