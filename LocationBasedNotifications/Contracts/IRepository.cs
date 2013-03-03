@@ -13,13 +13,14 @@ namespace LocationBasedNotifications.Contracts
         Location GetLocationById(int id);
         IEnumerable<Location> GetLocationsList();
         bool AddLocation(Location itemToAdd);
-        bool RemoveLocation(Location itemToRemove);
+        bool DeleteLocation(Location itemToDelete);
         #endregion Location Methods
 
         #region Reminder Methods
         IEnumerable<Reminder> GetRemindersList();
         IEnumerable<Reminder> GetRemindersByStatusId(int statusId);
         void AddReminder(Reminder reminder);
+        bool DeleteReminder(Reminder reminder);
         #endregion Reminder Methods
 
         #region Status Methods

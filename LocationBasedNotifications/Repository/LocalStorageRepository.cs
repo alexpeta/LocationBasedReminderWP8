@@ -51,7 +51,7 @@ namespace LocationBasedNotifications.Repository
 
             return true;
         }
-        public bool RemoveLocation(Location itemToRemove)
+        public bool DeleteLocation(Location itemToRemove)
         {
             if (itemToRemove == null)
             {
@@ -125,11 +125,32 @@ namespace LocationBasedNotifications.Repository
 
             return result;
         }
+        public bool DeleteReminder(Reminder reminder)
+        {
+            if (reminder == null)
+            {
+                throw new ArgumentNullException("reminder");
+            }
+
+            try
+            {
+                _db.Reminders.DeleteOnSubmit(reminder);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
         public void Save()
         {
             _db.SubmitChanges();
         }
         #endregion IRepository
+
+
+
 
     }
 }

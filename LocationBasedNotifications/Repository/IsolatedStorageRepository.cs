@@ -61,7 +61,7 @@ namespace LocationBasedNotifications.Repository
             return true;
         }
 
-        public bool RemoveLocation(Location itemToRemove)
+        public bool DeleteLocation(Location itemToRemove)
         {
             throw new NotImplementedException();
         }
@@ -114,6 +114,12 @@ namespace LocationBasedNotifications.Repository
 
 
         public IEnumerable<Reminder> GetRemindersByStatusId(int statusId)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public bool DeleteReminder(Reminder reminder)
         {
             throw new NotImplementedException();
         }

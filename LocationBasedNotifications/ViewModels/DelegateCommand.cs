@@ -46,10 +46,10 @@ namespace LocationBasedNotifications.ViewModels
 
         public void RaiseCanExecuteChanged()
         {
-            var helper = CanExecuteChanged;
-            if (helper != null)
+            var eventHandlerCopy = CanExecuteChanged;
+            if (eventHandlerCopy != null)
             {
-                helper(this, EventArgs.Empty);
+                eventHandlerCopy(this, EventArgs.Empty);
             }
         }
         #endregion ICommand

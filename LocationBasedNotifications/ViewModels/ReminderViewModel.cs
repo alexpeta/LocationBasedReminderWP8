@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using Windows.Devices.Geolocation;
 
@@ -19,6 +20,7 @@ namespace LocationBasedNotifications
         private ObservableCollection<Reminder>  _inactiveReminders;
         private ObservableCollection<ReminderStatus> _statuses;
         private ICommand _activationCommand;
+        private ICommand _deleteCommand;
         private Reminder _selectedReminder;
         #endregion Private Members
 
@@ -66,6 +68,17 @@ namespace LocationBasedNotifications
                 _activationCommand = value;
             }
         }
+        public ICommand DeleteCommand
+        {
+            get
+            {
+                return _deleteCommand;
+            }
+            set
+            {
+                _deleteCommand = value;
+            }
+        }
         #endregion Public Properties
 
         #region Constructors
@@ -78,8 +91,10 @@ namespace LocationBasedNotifications
             SelectedReminder = null;
 
             ActivationCommand = new DelegateCommand(this.OnActivationCommand);
+            DeleteCommand = new DelegateCommand(this.OnDeleteCommand);
 
             LoadDataAsyncFromRepository();
+
         }
         #endregion Constructors
 
@@ -123,6 +138,34 @@ namespace LocationBasedNotifications
                     Reminder reminder = InctiveReminders.FirstOrDefault(r => r.ReminderId == castedReminderId);
                     this.ActivateSelectedItem(reminder);
                 }                     
+            }
+        }
+        public void OnDeleteCommand(object reminderId)
+        {
+            MessageBoxResult deleteAnswer = MessageBox.Show("Are you sure you want to delete this reminder?", "Delete Reminder", MessageBoxButton.OKCancel);
+            if (deleteAnswer == MessageBoxResult.OK)
+            {
+                int castedReminderId = 0;
+                try
+                {
+                    castedReminderId = Convert.ToInt32(reminderId);
+                }
+                catch (Exception)
+                {
+                    castedReminderId = -1;
+                }
+
+                if (castedReminderId != 0 && castedReminderId != -1)
+                {
+                    Reminder reminder = InctiveReminders.FirstOrDefault(r => r.ReminderId == castedReminderId);
+                    if (reminder != null)
+                    {
+                        if(base.Repository.DeleteReminder(reminder))
+                        {
+                            InctiveReminders.Remove(reminder);
+                        }
+                    }
+                }
             }
         }
         #endregion Public Methods
@@ -169,7 +212,6 @@ namespace LocationBasedNotifications
             }
 
         }
-
         private void DeactivateSelectedItem(Reminder reminder)
         {
             if (reminder != null)

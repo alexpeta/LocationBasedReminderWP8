@@ -79,7 +79,7 @@ namespace LocationBasedNotifications
         {
             if (MyLocation != null)
             {
-                base.Repository.RemoveLocation(MyLocation);
+                base.Repository.DeleteLocation(MyLocation);
                 base.Repository.Save();
                 _myLocations.Remove(MyLocation);
             }

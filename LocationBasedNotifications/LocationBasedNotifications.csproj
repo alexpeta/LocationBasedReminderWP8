@@ -134,6 +134,7 @@
     </Compile>
     <Compile Include="ViewModels\DelegateCommand.cs" />
     <Compile Include="ViewModels\LocationViewModel.cs" />
+    <Compile Include="ViewModels\MapViewModel.cs" />
     <Compile Include="ViewModels\ReminderViewModel.cs" />
     <Compile Include="MyLocations.xaml.cs">
       <DependentUpon>MyLocations.xaml</DependentUpon>

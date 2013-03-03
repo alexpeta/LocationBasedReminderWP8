@@ -46,73 +46,39 @@ namespace LocationBasedNotifications
 
             ApplicationBarIconButton addBarButton = new ApplicationBarIconButton();
             addBarButton.IconUri = new Uri("/Assets/new.png", UriKind.Relative);
-            addBarButton.Text = "New Location";
+            addBarButton.Text = "New Reminder";
             addBarButton.IsEnabled = true;
             addBarButton.Click += CreateReminderButton_Click;
             ApplicationBar.Buttons.Add(addBarButton);
 
-            ApplicationBarIconButton deleteLocationBarButton = new ApplicationBarIconButton();
-            deleteLocationBarButton.IconUri = new Uri("/Assets/delete.png", UriKind.Relative);
-            deleteLocationBarButton.Text = "Delete";
-            deleteLocationBarButton.IsEnabled = false;
-            deleteLocationBarButton.Click += DeleteReminderButton_Click;
-            ApplicationBar.Buttons.Add(deleteLocationBarButton);
         }
 
         #region Click Event Handlers
-        private void OnSelectedReminderChanged(object sender, RoutedEventArgs e)
-        {
-            ListBox listbox = sender as ListBox;
-            if (listbox != null)
-            {
-                Reminder selectedReminder = listbox.SelectedItem as Reminder;
-                if (selectedReminder != null)
-                {
-                    _model.SelectedReminder = selectedReminder;
-
-                    foreach (var button in ApplicationBar.Buttons)
-                    {
-                        ApplicationBarIconButton castedButton = button as ApplicationBarIconButton;
-                        if (castedButton != null)
-                        {
-                            if (!string.Equals(castedButton.Text, "New Location", StringComparison.CurrentCultureIgnoreCase))
-                            {
-                                castedButton.IsEnabled = _model.SelectedReminder != null;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        private void OnSelectedPivotItemChanged(object sender, SelectionChangedEventArgs e)
-        {
-            Pivot pivot = sender as Pivot;
-            if (pivot != null)
-            {
-                PivotItem selectedItem = pivot.SelectedItem as PivotItem;
-                if (selectedItem != null)
-                {
-                    if (string.Equals(selectedItem.Header.ToString(), "Active", StringComparison.CurrentCultureIgnoreCase))
-                    {
-
-                    }
-                    else
-                    {
-
-                    }
-                }
-            }
-        }
-        private void DeleteReminderButton_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
         private void CreateReminderButton_Click(object sender, EventArgs e)
         {
             NavigationService.Navigate(new Uri("/CreateReminder.xaml", UriKind.Relative));
         }
         #endregion Click Event Handlers
 
+        private void ViewMap_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button != null)
+            {
+                int castedReminderId = 0;
+                try
+                {
+                    castedReminderId = Convert.ToInt32(button.Tag);
+                }
+                catch (Exception)
+                {
+                    castedReminderId = -1;
+                }
+
+                NavigationService.Navigate(new Uri(string.Format("/Map.xaml?{0}",castedReminderId.ToString()),UriKind.Relative));
+
+            }
+        }
         #endregion  Private Methods
     }
 }
