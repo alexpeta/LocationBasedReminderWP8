@@ -52,12 +52,14 @@ namespace LocationBasedNotifications
                 gym.Name = "Gym";
                 gym.Longitude = 026.0823D;
                 gym.Latitude = 44.4298D;
+                gym.Description = string.Empty;
                 _repository.AddLocation(gym);
 
                 Location home = new Location();
-                home.Name = "Home";
+                home.Name = "MyHome";
                 home.Longitude = 024.8690D;
                 home.Latitude = 43.7461D;
+                home.Description = string.Empty;
                 _repository.AddLocation(home);
 
 
@@ -65,6 +67,7 @@ namespace LocationBasedNotifications
                 work.Name = "Work";
                 work.Longitude = 026.0808D;
                 work.Latitude = 44.4294D;
+                work.Description = string.Empty;
                 _repository.AddLocation(work);
 
 
@@ -87,12 +90,87 @@ namespace LocationBasedNotifications
                 _repository.AddReminder(reminder);
                 _repository.AddReminder(second);
 
-                _repository.Save();
+
                 loaded = true;
             }
         }
 
         #endregion Button Handlers
+
+        private void LiveTileButton_Click_1(object sender, RoutedEventArgs e)
+        {
+            IconicTileData oIcontile = new IconicTileData();
+            oIcontile.Title = "Hello Iconic Tile!!";
+            oIcontile.Count = 7;
+
+            oIcontile.IconImage = new Uri("Assets/Tiles/202x202.png", UriKind.Relative);
+            oIcontile.SmallIconImage = new Uri("Assets/Tiles/110x110.png", UriKind.Relative);
+
+            oIcontile.WideContent1 = "windows phone 8 Live tile";
+            oIcontile.WideContent2 = "Icon tile";
+            oIcontile.WideContent3 = "All about Live tiles By WmDev";
+
+            oIcontile.BackgroundColor = System.Windows.Media.Colors.Orange;
+
+            // find the tile object for the application tile that using "Iconic" contains string in it.
+            ShellTile TileToFind = ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("Location".ToString()));
+
+            if (TileToFind != null && TileToFind.NavigationUri.ToString().Contains("Location"))
+            {
+                TileToFind.Delete();
+                ShellTile.Create(new Uri("/MainPage.xaml?id=Iconic", UriKind.Relative), oIcontile, true);
+            }
+            else
+            {
+                ShellTile.Create(new Uri("/MainPage.xaml?id=Iconic", UriKind.Relative), oIcontile, true);
+            }
+        }
+
+        private void FlipTileButton_Click_1(object sender, RoutedEventArgs e)
+        {
+
+            // find the tile object for the application tile that using "flip" contains string in it.
+            ShellTile oTile = ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("Location".ToString()));
+
+
+            if (oTile != null && oTile.NavigationUri.ToString().Contains("Location"))
+            {
+                FlipTileData oFliptile = new FlipTileData();
+                oFliptile.Title = "Hello WP8!!";
+                oFliptile.Count = 11;
+                oFliptile.BackTitle = "Updated Flip Tile";
+
+                oFliptile.BackContent = "back of tile";
+                oFliptile.WideBackContent = "back of the wide tile";
+
+                oFliptile.BackBackgroundImage = new Uri("/Assets/Tiles/A336.png", UriKind.Relative);
+                oFliptile.WideBackBackgroundImage = new Uri("/Assets/Tiles/A691.png", UriKind.Relative);
+                oTile.Update(oFliptile);
+                MessageBox.Show("Flip Tile Data successfully update.");
+            }
+            else
+            {
+                // once it is created flip tile
+                Uri tileUri = new Uri("/MainPage.xaml?tile=flip", UriKind.Relative);
+                ShellTileData tileData = this.CreateFlipTileData();
+                ShellTile.Create(tileUri, tileData, true);
+            }
+        }
+
+        private ShellTileData CreateFlipTileData()
+        {
+            return new FlipTileData()
+            {
+                Title = "Hi Flip Tile",
+                BackTitle = "This is WP8 flip tile",
+                BackContent = "Live Tile Demo",
+                WideBackContent = "Hello Nokia Lumia 920",
+                Count = 8,
+                SmallBackgroundImage = new Uri("/Assets/Tiles/A159.png", UriKind.Relative),
+                BackgroundImage = new Uri("/Assets/Tiles/A336.png", UriKind.Relative),
+                WideBackgroundImage = new Uri("/Assets/Tiles/A691.png", UriKind.Relative),
+            };
+        }
 
 
     }

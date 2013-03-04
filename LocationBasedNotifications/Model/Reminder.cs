@@ -104,14 +104,14 @@ namespace LocationBasedNotifications
             }
         }
 
-        [Association(Storage = "_status", ThisKey = "ReminderStatusId", OtherKey = "ReminderStatusId", IsForeignKey = true, DeleteOnNull = true)]
+        [Association(Storage = "_status", ThisKey = "ReminderStatusId", OtherKey = "ReminderStatusId", IsForeignKey = true, DeleteOnNull = true, DeleteRule = "CASCADE")]
         public ReminderStatus Status
         {
             get { return _status.Entity; }
             set { _status.Entity = value; }
         }
 
-        [Association(Storage = "_location", ThisKey = "LocationId", OtherKey = "LocationId", IsForeignKey = true, DeleteOnNull = true)]
+        [Association(Storage = "_location", ThisKey = "LocationId", OtherKey = "LocationId", IsForeignKey = true, DeleteOnNull = true, DeleteRule="CASCADE")]
         public Location Location
         {
             get { return _location.Entity; }

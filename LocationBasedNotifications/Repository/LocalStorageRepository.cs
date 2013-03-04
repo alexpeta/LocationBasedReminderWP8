@@ -60,6 +60,12 @@ namespace LocationBasedNotifications.Repository
 
             try
             {
+                if (_db.Reminders != null)
+                {
+                    IEnumerable<Reminder> remindersWithSelectedLocation = _db.Reminders.Where(r => r.LocationId == itemToRemove.LocationId);
+                    _db.Reminders.DeleteAllOnSubmit(remindersWithSelectedLocation);
+                }
+
                 _db.Locations.DeleteOnSubmit(itemToRemove);
                 _db.SubmitChanges();
             }
@@ -101,6 +107,7 @@ namespace LocationBasedNotifications.Repository
             if (reminder != null)
             {
                 _db.Reminders.InsertOnSubmit(reminder);
+                _db.SubmitChanges();
             }
         }
         public IEnumerable<ReminderStatus> GetReminderStatusesList()
@@ -135,6 +142,7 @@ namespace LocationBasedNotifications.Repository
             try
             {
                 _db.Reminders.DeleteOnSubmit(reminder);
+                _db.SubmitChanges();
             }
             catch (Exception)
             {
@@ -142,10 +150,6 @@ namespace LocationBasedNotifications.Repository
             }
 
             return true;
-        }
-        public void Save()
-        {
-            _db.SubmitChanges();
         }
         #endregion IRepository
 

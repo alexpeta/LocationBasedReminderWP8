@@ -81,6 +81,8 @@ namespace LocationBasedNotifications
             return hash;
         }
 
+
+        //TODO : override == and !=
         #endregion Overrides
 
     }

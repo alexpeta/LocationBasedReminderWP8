@@ -75,7 +75,7 @@ namespace LocationBasedNotifications
                     castedReminderId = -1;
                 }
 
-                NavigationService.Navigate(new Uri(string.Format("/Map.xaml?{0}",castedReminderId.ToString()),UriKind.Relative));
+                NavigationService.Navigate(new Uri(string.Format("/Map.xaml?locationId={0}", castedReminderId.ToString()), UriKind.Relative));
 
             }
         }

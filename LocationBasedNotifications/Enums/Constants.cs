@@ -14,6 +14,7 @@ namespace LocationBasedNotifications
         public readonly static string LocationAgreement = "useLocationAgreement";
         public readonly static string LBNLocations = "LBNLocations";
         public readonly static string DBConnectionString = "Data Source=isostore:/LocationBasedReminders.sdf";
+        public readonly static int MapZoomLevel = 10;
 
         private Constants()
         {

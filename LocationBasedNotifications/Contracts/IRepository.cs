@@ -27,9 +27,5 @@ namespace LocationBasedNotifications.Contracts
         ReminderStatus GetStatusById(int id);
         IEnumerable<ReminderStatus> GetReminderStatusesList();
         #endregion Status Methods
-
-        #region Generic Methods
-        void Save();
-        #endregion 
     }
 }

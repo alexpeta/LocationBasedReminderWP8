@@ -25,7 +25,6 @@ namespace LocationBasedNotifications
         {
             InitializeComponent();
             CreateAppBar();
-
             _model = new LocationViewModel();
             _model.PopulateModelWithStorageData();
 
@@ -76,25 +75,15 @@ namespace LocationBasedNotifications
         #region Private Event Handlers
         private void OnSelectedLocationChanged(object sender, RoutedEventArgs e)
         {
-            ListBox listbox = sender as ListBox;
-            if (listbox != null)
+            foreach (var button in ApplicationBar.Buttons)
             {
-                Location selectedLocation = listbox.SelectedItem as Location;
-                if (selectedLocation != null)
+                ApplicationBarIconButton castedButton = button as ApplicationBarIconButton;
+                if (castedButton != null)
                 {
-                    _model.MyLocation = selectedLocation;
-
-                    foreach (var button in ApplicationBar.Buttons)
+                    if (!string.Equals(castedButton.Text, "New Location", StringComparison.CurrentCultureIgnoreCase) &&
+                        !string.Equals(castedButton.Text, "Back", StringComparison.CurrentCultureIgnoreCase))
                     {
-                        ApplicationBarIconButton castedButton = button as ApplicationBarIconButton;
-                        if (castedButton != null)
-                        {
-                            if (!string.Equals(castedButton.Text, "New Location", StringComparison.CurrentCultureIgnoreCase) &&
-                                !string.Equals(castedButton.Text, "Back", StringComparison.CurrentCultureIgnoreCase))
-                            {
-                                castedButton.IsEnabled = _model.MyLocation != null;
-                            }
-                        }
+                        castedButton.IsEnabled = _model.MyLocation != null;
                     }
                 }
             }
@@ -105,19 +94,16 @@ namespace LocationBasedNotifications
             if (answer == MessageBoxResult.OK)
             {
                 _model.RemoveLocation();
-                _model.MyLocation = null;
             }
         }
         private void CreateLocationButton_Click(object sender, EventArgs e)
         {
             NavigationService.Navigate(new Uri("/CreateEditLocation.xaml", UriKind.Relative));
         }
-
         private void BackToMainScreenBarButton_Click(object sender, EventArgs e)
         {
             NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
         }
-
         private void EditLocationButton_Click(object sender, EventArgs e)
         {
             string selectedLocationId = string.Empty;

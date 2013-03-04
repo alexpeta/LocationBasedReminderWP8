@@ -32,15 +32,6 @@ namespace LocationBasedNotifications
         #endregion Constructors
 
         #region Button Handlers
-        private async void GetMyLocationButton_Click(object sender, RoutedEventArgs e)
-        {
-            Geocoordinate currentPosition = await HelperMethods.GetCurrentLocation();
-            if (currentPosition != null)
-            {
-                _model.MyLocation.Latitude = currentPosition.Latitude;
-                _model.MyLocation.Longitude = currentPosition.Longitude;
-            }
-        }
         private void SaveLocationButton_Click(object sender, RoutedEventArgs e)
         {
             _model.SaveMyLocation();

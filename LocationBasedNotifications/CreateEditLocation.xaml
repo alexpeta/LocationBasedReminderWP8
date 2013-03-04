@@ -33,7 +33,7 @@
                 <TextBox x:Name="NameTextbox" Height="70" Text="{Binding Path=MyLocation.Name, Mode=TwoWay}" />
                 <StackPanel>
                     <TextBlock Text="Coordinates:"></TextBlock>
-                    <Button x:Name="GetMyLocationButton" Content="use my current location" Click="GetMyLocationButton_Click"></Button>
+                    <Button x:Name="GetMyLocationButton" Content="use my current location" Command="{Binding GetGeolocationCommand}"></Button>
                     <TextBlock x:Name="LatitudeCoordinate" Text="{Binding Path=MyLocation.Latitude, Mode=TwoWay}" />
                     <TextBlock x:Name="LongitudeCoordinate" Text="{Binding Path=MyLocation.Longitude, Mode=TwoWay}"/>
                 </StackPanel>

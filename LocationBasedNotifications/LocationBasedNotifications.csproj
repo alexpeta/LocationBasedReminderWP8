@@ -114,6 +114,7 @@
     <Compile Include="Model\Location.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Model\MapMode.cs" />
     <Compile Include="Model\Reminder.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -193,6 +194,11 @@
     </Content>
     <Content Include="Assets\questionmark.png" />
     <Content Include="Assets\edit.png" />
+    <Content Include="Assets\Tiles\110x110.png" />
+    <Content Include="Assets\Tiles\202x202.png" />
+    <Content Include="Assets\Tiles\A159.png" />
+    <Content Include="Assets\Tiles\A336.png" />
+    <Content Include="Assets\Tiles\A691.png" />
     <Content Include="Assets\Tiles\FlipCycleTileLarge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -30,7 +30,7 @@
                                     <TextBlock Text="{Binding Path=Location.Name, Mode=TwoWay}" Margin="30,0,0,0"></TextBlock>
                                     <StackPanel Orientation="Horizontal">
                                         <Button Content="Deactivate" Command="{Binding ElementName=ActiveRemindersListBox, Path=DataContext.ActivationCommand}" CommandParameter="{Binding ReminderId}"></Button>
-                                        <Button Content="View Map" Click="ViewMap_Click" Tag="{Binding ReminderId}"></Button>
+                                        <Button Content="View Map" Click="ViewMap_Click" Tag="{Binding Path=Location.LocationId}"></Button>
                                     </StackPanel>                                   
                                 </StackPanel>
                             </DataTemplate>

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LocationBasedNotifications.Helpers;
+using LocationBasedNotifications.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -6,6 +8,9 @@ using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using Windows.Devices.Geolocation;
 
 namespace LocationBasedNotifications
 {
@@ -14,6 +19,7 @@ namespace LocationBasedNotifications
         #region Private Members
         private ObservableCollection<Location> _myLocations;
         private Location _myLocation;
+        private ICommand _getGeolocationCommand;
         #endregion
 
         #region Properties
@@ -36,7 +42,18 @@ namespace LocationBasedNotifications
                 _myLocation = value;
                 NotifyPropertyChanged("MyLocation");
             }
-        }       
+        }
+        public ICommand GetGeolocationCommand
+        {
+            get
+            {
+                return _getGeolocationCommand;
+            }
+            set
+            {
+                _getGeolocationCommand = value;
+            }
+        }
         #endregion Properties
 
         #region Constructors
@@ -44,10 +61,21 @@ namespace LocationBasedNotifications
         {
             MyLocations = new ObservableCollection<Location>();
             MyLocation = new Location();
+            GetGeolocationCommand = new DelegateCommand(OnGetGeolocationCommand);
         }
+
         #endregion Constructors
 
         #region Private Methods
+        private async void OnGetGeolocationCommand(object obj)
+        {
+            Geocoordinate currentPosition = await HelperMethods.GetCurrentLocation();
+            if (currentPosition != null)
+            {
+                MyLocation.Latitude = currentPosition.Latitude;
+                MyLocation.Longitude = currentPosition.Longitude;
+            }
+        }
         #endregion Private Methods
 
 
@@ -69,21 +97,15 @@ namespace LocationBasedNotifications
         }
         public void SaveMyLocation()
         {
-            if (MyLocation != null)
-            {
-                base.Repository.AddLocation(MyLocation);
-                base.Repository.Save();
-            }
+            base.Repository.AddLocation(MyLocation);
         }
         public void RemoveLocation()
         {
-            if (MyLocation != null)
-            {
-                base.Repository.DeleteLocation(MyLocation);
-                base.Repository.Save();
-                _myLocations.Remove(MyLocation);
-            }
+            base.Repository.DeleteLocation(MyLocation);
+            _myLocations.Remove(MyLocation);
         }
         #endregion Public Methods
+
+        
     }
 }

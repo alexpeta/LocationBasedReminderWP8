@@ -1,11 +1,14 @@
-﻿using System;
+﻿using Microsoft.Phone.Maps.Toolkit;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
+using System.Device.Location;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace LocationBasedNotifications
 {
@@ -112,6 +115,15 @@ namespace LocationBasedNotifications
         //        _reminder.Entity = value;
         //    }
         //}
+
+
+        public GeoCoordinate GeoCoordinate
+        {
+            get 
+            {
+                return new GeoCoordinate(Latitude, Longitude);
+            }
+        }
         #endregion Properties
 
         #region Constructors
@@ -127,5 +139,28 @@ namespace LocationBasedNotifications
         }
         #endregion Constructors
 
+        #region Public Methods
+        public Pushpin GetSimplePushpin(Color backgroundColor)
+        {
+            Pushpin locationPushpin = new Pushpin();
+            locationPushpin.Background = new SolidColorBrush(backgroundColor);
+            locationPushpin.Content = Name;
+            //locationPushpin.Tag = "locationPushpin";
+
+            return locationPushpin;
+        }
+        public Location DeepCopy()
+        {
+            Location result = new Location();
+            
+            result.Longitude = Longitude;
+            result.Latitude = Latitude;
+            result.Name = Name;
+            result.Description = Description;
+            result.LocationId = LocationId;
+
+            return result;
+        }
+        #endregion Public Methods
     }
 }

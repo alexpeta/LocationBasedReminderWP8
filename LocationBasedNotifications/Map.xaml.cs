@@ -13,22 +13,33 @@ using System.Device.Location;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using Microsoft.Phone.Maps.Controls;
+using Microsoft.Phone.Maps.Toolkit;
+using LocationBasedNotifications.Model;
 
 namespace LocationBasedNotifications
 {
     public partial class Map : PhoneApplicationPage
     {
         #region Private Members
-
+        private MapViewModel _model;
         #endregion Private Members
 
+        #region Public Properties
+        public MapViewModel Model
+        {
+            get { return _model; }
+            set { _model = value; }
+        }
+        #endregion Public Properties
+
         #region Constructors
-        
         public Map()
         {
             InitializeComponent();
             CreateAppBar();
+            Model = new MapViewModel();
         }
+
         #endregion Constructors
 
         #region Private Methods
@@ -50,38 +61,58 @@ namespace LocationBasedNotifications
         }
         private void EditLocationButton_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            string param = string.Empty;
+            if (Model.Location != null)
+            {
+                param = string.Format("?locationId={0}", Model.Location.LocationId);
+            }
+            NavigationService.Navigate(new Uri(string.Format("/CreateEditLocation.xaml{0}",param), UriKind.Relative));
         }
 
-        private void AddPushpin()
+        private void AddPushPin()
         {
-
+            MapOverlay MyOverlay = new MapOverlay();
+            MyOverlay.GeoCoordinate = Model.Location.GeoCoordinate;
+            MyOverlay.Content = Model.Location.GetSimplePushpin(Colors.Purple);
+            
+            MapLayer MyLayer = new MapLayer();
+          
+            MyLayer.Add(MyOverlay);
+            MyMap.Layers.Add(MyLayer);
         }
+
 
         #endregion Private Methods
 
         #region Overrides
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            //int passedParameter = 0;
-            //try
-            //{
-            //    string stringParam = NavigationContext.QueryString["locationID"];
-            //    int.TryParse(stringParam,out passedParameter);
+            int passedParameter = 0;
+            try
+            {
+                string stringParam = NavigationContext.QueryString["locationId"];
+                int.TryParse(stringParam, out passedParameter);
+            }
+            catch (Exception)
+            {
+                passedParameter = -1;
+            }
 
-            //    if (_repository != null)
-            //    {
-            //        _model = _repository.GetLocationById(passedParameter);
-            //        GeoCoordinate coordonates = new GeoCoordinate(_model.Latitude, _model.Longitude);
-            //        MyMap.Center = coordonates;
-            //        MyMap.ZoomLevel = 10;
-            //    }
-            //}
-            //catch (Exception)
-            //{
-            //    passedParameter = 0;
-            //}
-                        
+            if (passedParameter != 0 && passedParameter != -1)
+            {
+                Model.MapMode = MapMode.Edit;
+                Model.LoadLocationById(passedParameter);
+                MyMap.Center = Model.Location.GeoCoordinate;
+                MyMap.ZoomLevel = Constants.MapZoomLevel;
+                AddPushPin();
+            }
+            else
+            {
+                Model.MapMode = MapMode.Create;
+                MyMap.ZoomLevel = Constants.MapZoomLevel;
+            }
+
+
             base.OnNavigatedTo(e);
         }
         #endregion Overrides
