@@ -1,0 +1,4 @@
+C:\Users\Alex\documents\visual studio 2012\Projects\LocationBasedNotifications\ScheduledTaskAgent\Bin\Debug\ScheduledTaskAgent.dll
+C:\Users\Alex\documents\visual studio 2012\Projects\LocationBasedNotifications\ScheduledTaskAgent\Bin\Debug\ScheduledTaskAgent.pdb
+C:\Users\Alex\documents\visual studio 2012\Projects\LocationBasedNotifications\ScheduledTaskAgent\obj\Debug\ScheduledTaskAgent.dll
+C:\Users\Alex\documents\visual studio 2012\Projects\LocationBasedNotifications\ScheduledTaskAgent\obj\Debug\ScheduledTaskAgent.pdb

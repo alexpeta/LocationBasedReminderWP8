@@ -12,6 +12,7 @@ using Windows.Storage;
 using Microsoft.Phone.Scheduler;
 using LocationBasedNotifications.Repository;
 using LocationBasedNotifications.Contracts;
+using ScheduledTaskAgent;
 
 namespace LocationBasedNotifications
 {
@@ -165,11 +166,37 @@ namespace LocationBasedNotifications
                 BackTitle = "This is WP8 flip tile",
                 BackContent = "Live Tile Demo",
                 WideBackContent = "Hello Nokia Lumia 920",
-                Count = 8,
+                Count = 99,
                 SmallBackgroundImage = new Uri("/Assets/Tiles/A159.png", UriKind.Relative),
                 BackgroundImage = new Uri("/Assets/Tiles/A336.png", UriKind.Relative),
                 WideBackgroundImage = new Uri("/Assets/Tiles/A691.png", UriKind.Relative),
             };
+        }
+
+
+        PeriodicTask periodicTask;
+        string periodicTaskName = "PeriodicAgent";
+        public bool agentsAreEnabled = true;
+
+        private void UpdateTileViaAgent_Click_1(object sender, RoutedEventArgs e)
+        {
+            periodicTask = ScheduledActionService.Find(periodicTaskName) as PeriodicTask;
+            if (periodicTask != null)
+            {
+                ScheduledActionService.Remove(periodicTaskName);
+            }
+
+
+            periodicTask = new PeriodicTask(periodicTaskName);
+            periodicTask.Description = "This is Lockscreen image provider app.";
+            periodicTask.ExpirationTime = DateTime.Now.AddDays(14);
+
+            ScheduledActionService.Add(periodicTask);
+
+            // If debugging is enabled, use LaunchForTest to launch the agent in one minute.
+
+            ScheduledActionService.LaunchForTest(periodicTaskName, TimeSpan.FromSeconds(10));
+
         }
 
 
