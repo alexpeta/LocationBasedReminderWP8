@@ -35,7 +35,7 @@ namespace LocationBasedNotifications
         private void SaveLocationButton_Click(object sender, RoutedEventArgs e)
         {
             _model.SaveMyLocation();
-            NavigationService.Navigate(new Uri(string.Format("/MyLocations.xaml?locationID={0}", _model.MyLocation.LocationId), UriKind.Relative));
+            NavigationService.Navigate(new Uri(string.Format("/MyLocations.xaml?locationId={0}", _model.MyLocation.LocationId), UriKind.Relative));
         }
         #endregion Button Handlers
 

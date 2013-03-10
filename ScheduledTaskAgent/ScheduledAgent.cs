@@ -3,6 +3,7 @@ using System.Windows;
 using Microsoft.Phone.Scheduler;
 using Microsoft.Phone.Shell;
 using System;
+using System.Device.Location;
 
 namespace ScheduledTaskAgent
 {
@@ -41,35 +42,52 @@ namespace ScheduledTaskAgent
         /// </remarks>
         protected override void OnInvoke(ScheduledTask task)
         {
-            //TODO: Add code to perform your task in background
-            string toastMessage = "";
-
-            // If your application uses both PeriodicTask and ResourceIntensiveTask
-            // you can branch your application code here. Otherwise, you don't need to.
-            if (task is PeriodicTask)
+            //ScheduledActionService.LaunchForTest(task.Name, TimeSpan.FromSeconds(60));
+            if (TryGetGeoCoordinate())
             {
-                // Execute periodic task actions here.
-                toastMessage = "Periodic task running.";
+                NotifyComplete();
             }
             else
             {
-                // Execute resource-intensive task actions here.
-                toastMessage = "Resource-intensive task running.";
+ 
             }
+        }
 
-            // Launch a toast to show that the agent is running.
-            // The toast will not be shown if the foreground application is running.
+        private bool TryGetGeoCoordinate()
+        {
+            bool result = false;
+            //try
+            //{
+                GeoCoordinateWatcher locationWatcher = new GeoCoordinateWatcher(GeoPositionAccuracy.High);
+                locationWatcher.MovementThreshold = 200;
+                locationWatcher.PositionChanged += OnPositionChanged;
+                result = locationWatcher.TryStart(true, TimeSpan.FromSeconds(10));
+            //}
+            //catch (Exception)
+            //{                
+            //    throw;
+            //}
+            return result;
 
+        }
+
+        private void OnPositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
+        {
+            GeoCoordinateWatcher raiser = sender as GeoCoordinateWatcher;
+            if (raiser != null)
+            {
+                raiser.Stop();
+                SendToastReminder();
+            }
+        }
+
+        private void SendToastReminder()
+        {
             ShellToast toast = new ShellToast();
-            toast.Title = "Background Agent Sample";
-            toast.Content = toastMessage;
+            toast.Title = "LBR";
+            toast.Content = "You have arrived!!";
+            toast.NavigationUri = new Uri("/ReminderPivot.xaml", UriKind.Relative);
             toast.Show();
-
-            // If debugging is enabled, launch the agent again in one minute.
-
-            ScheduledActionService.LaunchForTest(task.Name, TimeSpan.FromSeconds(60));
-            
-            NotifyComplete();
         }
     }
 }

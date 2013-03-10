@@ -62,6 +62,8 @@ namespace LocationBasedNotifications
             MyLocations = new ObservableCollection<Location>();
             MyLocation = new Location();
             GetGeolocationCommand = new DelegateCommand(OnGetGeolocationCommand);
+
+            PopulateModelWithStorageData();
         }
 
         #endregion Constructors
@@ -76,15 +78,7 @@ namespace LocationBasedNotifications
                 MyLocation.Longitude = currentPosition.Longitude;
             }
         }
-        #endregion Private Methods
-
-
-        #region Public Methods
-        public void LoadLocationForEdit(int locationId)
-        {
-            MyLocation = base.Repository.GetLocationById(locationId);
-        }
-        public void PopulateModelWithStorageData()
+        private void PopulateModelWithStorageData()
         {
             IEnumerable<Location> locations = base.Repository.GetLocationsList();
             if (locations != null)
@@ -94,6 +88,14 @@ namespace LocationBasedNotifications
                     MyLocations.Add(location);
                 }
             }
+        }
+        #endregion Private Methods
+
+
+        #region Public Methods
+        public void LoadLocationForEdit(int locationId)
+        {
+            MyLocation = base.Repository.GetLocationById(locationId);
         }
         public void SaveMyLocation()
         {

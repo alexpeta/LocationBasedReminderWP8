@@ -1,5 +1,6 @@
 ﻿using LocationBasedNotifications.Logic;
 using LocationBasedNotifications.ViewModels;
+using Microsoft.Phone.Scheduler;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -109,8 +110,7 @@ namespace LocationBasedNotifications
 
                 foreach (var reminder in ActiveReminders)
                 {
-                    DistanceHelper distanceHelper = new DistanceHelper(currentLocation, reminder.Location);
-                    reminder.DistanceToLocation = distanceHelper.Distance;
+                    reminder.DistanceToLocation = DistanceHelper.CalculateDistanceInKilometers(currentLocation, reminder.Location);
                 }
             }
         }
@@ -175,10 +175,18 @@ namespace LocationBasedNotifications
         {
             if (base.Repository != null)
             {
-                Statuses = new ObservableCollection<ReminderStatus>(base.Repository.GetReminderStatusesList());
+                IEnumerable<ReminderStatus> localStatusList = base.Repository.GetReminderStatusesList();
+
+                if (localStatusList != null)
+                {
+                    foreach (ReminderStatus status in localStatusList)
+                    {
+                        Statuses.Add(status);
+                    }
+                }
 
                 //load visible active sync
-                IEnumerable<Reminder> activeList = Repository.GetRemindersByStatusId(1);
+                IEnumerable<Reminder> activeList = Repository.GetRemindersByStatusId((int)ReminderStatusTypes.Active);
                 if (activeList != null)
                 {
                     foreach (var reminder in activeList)
@@ -192,7 +200,7 @@ namespace LocationBasedNotifications
 
                 Action getInactiveRemindersAction = () =>
                     {
-                        temporaryInactiveList = Repository.GetRemindersByStatusId(2);
+                        temporaryInactiveList = Repository.GetRemindersByStatusId((int)ReminderStatusTypes.Inactive);
                     };
 
                 await Task.Factory.StartNew(getInactiveRemindersAction);
@@ -221,6 +229,11 @@ namespace LocationBasedNotifications
                 Reminder copyOfSelectedReminder = reminder.DeepCopy();
                 copyOfSelectedReminder.Status = Statuses.FirstOrDefault(s => string.Equals(s.Value, "Inactive", StringComparison.CurrentCultureIgnoreCase));
                 InctiveReminders.Add(copyOfSelectedReminder);
+
+                if (!ActiveReminders.Any())
+                {
+                    RemoveBackgroundAgent();
+                }
             }
         }
         private void ActivateSelectedItem(Reminder reminder)
@@ -231,11 +244,43 @@ namespace LocationBasedNotifications
 
                 Reminder copyOfSelectedReminder = reminder.DeepCopy();
                 copyOfSelectedReminder.Status = Statuses.FirstOrDefault(s => string.Equals(s.Value, "Active", StringComparison.CurrentCultureIgnoreCase));
+
+                if (!ActiveReminders.Any())
+                {
+                    StartBackgroundAgent();
+                }
+                
                 ActiveReminders.Add(copyOfSelectedReminder);
+            }
+        }        
+        private void StartBackgroundAgent()
+        {
+            PeriodicTask periodicTask = null;
+
+            periodicTask = ScheduledActionService.Find(Constants.BackgroundAgentName) as PeriodicTask;
+            if (periodicTask != null)
+            {
+                ScheduledActionService.Remove(Constants.BackgroundAgentName);
+            }
+
+            periodicTask = new PeriodicTask(Constants.BackgroundAgentName);
+            periodicTask.Description = "This is Lockscreen image provider app.";
+            periodicTask.ExpirationTime = DateTime.Now.AddDays(14);
+
+            ScheduledActionService.Add(periodicTask);
+
+            ScheduledActionService.LaunchForTest(Constants.BackgroundAgentName, TimeSpan.FromSeconds(10));
+        }
+        private void RemoveBackgroundAgent()
+        {
+            PeriodicTask periodicTask = null;
+
+            periodicTask = ScheduledActionService.Find(Constants.BackgroundAgentName) as PeriodicTask;
+            if (periodicTask != null)
+            {
+                ScheduledActionService.Remove(Constants.BackgroundAgentName);
             }
         }
         #endregion Private Methods
-
-
     }
 }

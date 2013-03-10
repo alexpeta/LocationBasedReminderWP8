@@ -12,9 +12,17 @@ namespace LocationBasedNotifications
 {
     public partial class CreateReminder : PhoneApplicationPage
     {
+        #region Private Members
+        private CreateReminderViewModel _viewModel = null;
+        #endregion Private Members
+
+        #region Constructors
         public CreateReminder()
         {
             InitializeComponent();
+
+            _viewModel = new CreateReminderViewModel();
         }
+        #endregion Constructors
     }
 }

@@ -34,9 +34,7 @@ namespace LocationBasedNotifications
 
         protected virtual bool IsValid()
         {
-            throw new NotImplementedException();
+            return true;
         }
-
-
     }
 }

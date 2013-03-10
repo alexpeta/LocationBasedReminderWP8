@@ -21,6 +21,8 @@ namespace LocationBasedNotifications.Repository
         #endregion Constructors
 
         #region IRepository
+
+        #region Location Methods
         public IEnumerable<Location> GetLocationsList()
         {
             List<Location> result = null;
@@ -82,6 +84,9 @@ namespace LocationBasedNotifications.Repository
 
             return result;
         }
+        #endregion Location Methods
+
+        #region Reminder Methods
         public IEnumerable<Reminder> GetRemindersList()
         {
             List<Reminder> result = null;
@@ -109,17 +114,6 @@ namespace LocationBasedNotifications.Repository
                 _db.Reminders.InsertOnSubmit(reminder);
                 _db.SubmitChanges();
             }
-        }
-        public IEnumerable<ReminderStatus> GetReminderStatusesList()
-        {
-            List<ReminderStatus> result = null;
-
-            if (_db.Locations != null)
-            {
-                result = _db.ReminderStatuses.ToList();
-            }
-
-            return result;
         }
         public IEnumerable<Reminder> GetRemindersByStatusId(int statusId)
         {
@@ -151,10 +145,22 @@ namespace LocationBasedNotifications.Repository
 
             return true;
         }
+        #endregion Reminder Methods
+
+        #region ReminderStatus methods
+        public IEnumerable<ReminderStatus> GetReminderStatusesList()
+        {
+            List<ReminderStatus> result = null;
+
+            if (_db.Locations != null)
+            {
+                result = _db.ReminderStatuses.ToList();
+            }
+
+            return result;
+        }
+        #endregion ReminderStatus methods
+
         #endregion IRepository
-
-
-
-
     }
 }

@@ -15,6 +15,8 @@ namespace LocationBasedNotifications
         public readonly static string LBNLocations = "LBNLocations";
         public readonly static string DBConnectionString = "Data Source=isostore:/LocationBasedReminders.sdf";
         public readonly static int MapZoomLevel = 10;
+        public readonly static string BackgroundAgentName = "LBNBackgroundAgent";
+        public readonly static int GeoCoordinateWatcherMovementThreshold = 200; //in meters
 
         private Constants()
         {

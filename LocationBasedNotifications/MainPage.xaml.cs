@@ -173,21 +173,17 @@ namespace LocationBasedNotifications
             };
         }
 
-
-        PeriodicTask periodicTask;
-        string periodicTaskName = "PeriodicAgent";
-        public bool agentsAreEnabled = true;
-
         private void UpdateTileViaAgent_Click_1(object sender, RoutedEventArgs e)
         {
-            periodicTask = ScheduledActionService.Find(periodicTaskName) as PeriodicTask;
+
+            PeriodicTask periodicTask = ScheduledActionService.Find(Constants.BackgroundAgentName) as PeriodicTask;
             if (periodicTask != null)
             {
-                ScheduledActionService.Remove(periodicTaskName);
+                ScheduledActionService.Remove(Constants.BackgroundAgentName);
+                periodicTask = null;
             }
 
-
-            periodicTask = new PeriodicTask(periodicTaskName);
+            periodicTask = new PeriodicTask(Constants.BackgroundAgentName);
             periodicTask.Description = "This is Lockscreen image provider app.";
             periodicTask.ExpirationTime = DateTime.Now.AddDays(14);
 
@@ -195,7 +191,7 @@ namespace LocationBasedNotifications
 
             // If debugging is enabled, use LaunchForTest to launch the agent in one minute.
 
-            ScheduledActionService.LaunchForTest(periodicTaskName, TimeSpan.FromSeconds(10));
+            ScheduledActionService.LaunchForTest(Constants.BackgroundAgentName, TimeSpan.FromSeconds(10));
 
         }
 

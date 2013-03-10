@@ -34,7 +34,6 @@ namespace LocationBasedNotifications
         }
         #endregion Constructors
 
-
         #region Private Methods
         private void CreateAppBar()
         {

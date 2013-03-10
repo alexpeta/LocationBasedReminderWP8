@@ -67,7 +67,6 @@ namespace LocationBasedNotifications
             }
         }
 
-        //this is just for binding not db column
         public double DistanceToLocation
         {
             get { return _distanceToLocation; }

@@ -26,7 +26,6 @@ namespace LocationBasedNotifications
             InitializeComponent();
             CreateAppBar();
             _model = new LocationViewModel();
-            _model.PopulateModelWithStorageData();
 
             this.DataContext = _model;
         }
@@ -43,7 +42,7 @@ namespace LocationBasedNotifications
             
             ApplicationBarIconButton addBarButton = new ApplicationBarIconButton();
             addBarButton.IconUri = new Uri("/Assets/new.png", UriKind.Relative);
-            addBarButton.Text = "New Location";
+            addBarButton.Text = "Add";
             addBarButton.IsEnabled = true;
             addBarButton.Click += CreateLocationButton_Click;
             ApplicationBar.Buttons.Add(addBarButton);
@@ -57,7 +56,7 @@ namespace LocationBasedNotifications
 
             ApplicationBarIconButton editButton = new ApplicationBarIconButton();
             editButton.IconUri = new Uri("/Assets/edit.png", UriKind.Relative);
-            editButton.Text = "Cancel Selection";
+            editButton.Text = "Edit";
             editButton.IsEnabled = false;
             editButton.Click += EditLocationButton_Click;
             ApplicationBar.Buttons.Add(editButton);
@@ -102,7 +101,7 @@ namespace LocationBasedNotifications
         }
         private void BackToMainScreenBarButton_Click(object sender, EventArgs e)
         {
-            NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/ReminderPivot.xaml", UriKind.Relative));
         }
         private void EditLocationButton_Click(object sender, EventArgs e)
         {

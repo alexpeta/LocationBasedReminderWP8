@@ -6,47 +6,16 @@ using System.Threading.Tasks;
 
 namespace LocationBasedNotifications.Logic
 {
-    public class DistanceHelper
+    public sealed class DistanceHelper
     {
         #region Private Members
         //represents the radius of the Earth in KM
-        private readonly int R = 6371;
-        private Location _start;
-        private Location _end;
-        private double _distance;
+        private static readonly int R = 6371;
         #endregion Private Members
 
-        #region Public Properties
-        public Location Start
-        {
-            get { return _start; }
-            set { _start = value; }
-        }
-        public Location End
-        {
-            get { return _end; }
-            set { _end = value; }
-        }
-        public double Distance
-        {
-            get
-            {
-                return _distance;
-            }
-            set
-            {
-                _distance = value;
-            }
-        }
-        #endregion Public Properties
-
         #region Constructors
-        public DistanceHelper(Location start, Location end)
+        private DistanceHelper()
         {
-            Start = start;
-            End = end;
-
-            CalculateDistance();
         }
         #endregion Constructors
         
@@ -58,20 +27,34 @@ namespace LocationBasedNotifications.Logic
         #endregion Statics
 
         #region Private Methods
-        private void CalculateDistance()
+        private static double CalculateDistance(Location start, Location end)
         {
-            double dLat = DistanceHelper.DegreesToRadians(End.Latitude - Start.Latitude);
-            double dLon = DistanceHelper.DegreesToRadians(End.Longitude - Start.Longitude);
+            double dLat = DistanceHelper.DegreesToRadians(end.Latitude - start.Latitude);
+            double dLon = DistanceHelper.DegreesToRadians(end.Longitude - start.Longitude);
 
-            double lat1 = DistanceHelper.DegreesToRadians(Start.Latitude);
-            double lat2 = DistanceHelper.DegreesToRadians(End.Latitude);
+            double lat1 = DistanceHelper.DegreesToRadians(start.Latitude);
+            double lat2 = DistanceHelper.DegreesToRadians(end.Latitude);
 
             double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) + Math.Sin(dLon / 2) * Math.Sin(dLon / 2) * Math.Cos(lat1) * Math.Cos(lat2);
 
             double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
 
-            this.Distance = R * c;
+            return R * c;
         }
         #endregion Private Methods
+
+        #region Public Methods
+        public static double CalculateDistanceInKilometers(Location start, Location end)
+        {
+            return CalculateDistance(start,end);
+        }
+        public static double CalculateDistanceInMeters(Location start, Location end)
+        {
+            return CalculateDistance(start,end)*1000;
+        }
+        
+
+
+        #endregion
     }
 }

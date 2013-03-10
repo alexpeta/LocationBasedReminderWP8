@@ -101,6 +101,7 @@
       <DependentUpon>CreateReminder.xaml</DependentUpon>
     </Compile>
     <Compile Include="Enums\Constants.cs" />
+    <Compile Include="Enums\ReminderStatusTypes.cs" />
     <Compile Include="Helpers\HelperMethods.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Logic\DistanceHelper.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Repository\ReminderDataContext.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ViewModels\CreateReminderViewModel.cs" />
     <Compile Include="ViewModels\DelegateCommand.cs" />
     <Compile Include="ViewModels\LocationViewModel.cs" />
     <Compile Include="ViewModels\MapViewModel.cs" />
@@ -181,6 +183,7 @@
   <ItemGroup>
     <None Include="LocationBasedNotifications_2013_02_25_22_00_58.sap" />
     <None Include="LocationBasedNotifications_2013_03_01_08_36_51.sap" />
+    <None Include="LocationBasedNotifications_2013_03_10_20_23_44.sap" />
     <None Include="packages.config" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
