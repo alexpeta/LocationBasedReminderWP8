@@ -13,7 +13,9 @@
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
-
+    
+    
+    
     <toolkit:TransitionService.NavigationInTransition>
         <toolkit:NavigationInTransition>
             <toolkit:NavigationInTransition.Backward>
@@ -35,7 +37,6 @@
         </toolkit:NavigationOutTransition>
     </toolkit:TransitionService.NavigationOutTransition>
 
-
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
@@ -45,6 +46,7 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
+            <ProgressBar Value="100" IsIndeterminate="{Binding IsBusy}"/>
             <TextBlock Text="MY APPLICATION" Style="{StaticResource PhoneTextNormalStyle}"/>
             <TextBlock Text="Add Reminder" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
@@ -52,10 +54,34 @@
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <StackPanel>
+
                 <TextBlock Text="Name:" />
-                <TextBox x:Name="ReminderName" />
+                <TextBox x:Name="ReminderName" Text="{Binding Path=Name, Mode=TwoWay}" />
                 <TextBlock Text="Location:" />
-                
+                <toolkit:ListPicker ExpansionMode="FullScreenOnly" 
+                                    FullModeHeader="Select Location" 
+                                    Name="locationPicker"
+                                    ItemsSource="{Binding Locations}"
+                                    SelectedItem="{Binding SelectedLocation, Mode=TwoWay}">
+                    <toolkit:ListPicker.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Name}" FontSize="20"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </toolkit:ListPicker.ItemTemplate>
+                    <toolkit:ListPicker.FullModeItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Name}" FontSize="36"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </toolkit:ListPicker.FullModeItemTemplate>
+                </toolkit:ListPicker>
+                <TextBlock Text="Accurecy (m):" />
+                <TextBox Text="{Binding Path=Accurecy,Mode=TwoWay}" InputScope="Number"/>
+
+                <Button Content="Save" Click="Button_Click_1"></Button>
             </StackPanel>
         </Grid>
     </Grid>

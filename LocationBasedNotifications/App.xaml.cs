@@ -15,6 +15,7 @@ namespace LocationBasedNotifications
 {
     public partial class App : Application
     {
+        private static readonly Object _syncLock = new Object();
 
         private static ReminderDataContext _localDB;
 
@@ -31,8 +32,11 @@ namespace LocationBasedNotifications
         public static ReminderDataContext LocalDB 
         { 
             get 
-            { 
-                return _localDB; 
+            {
+                lock (_syncLock)
+                {
+                    return _localDB;
+                }
             } 
         }
 

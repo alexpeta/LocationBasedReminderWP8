@@ -145,6 +145,20 @@ namespace LocationBasedNotifications.Repository
 
             return true;
         }
+
+        public Reminder GetReminderById(int reminderId)
+        {
+            return _db.Reminders.FirstOrDefault(r => r.ReminderId == reminderId);
+        }
+
+
+        public void UpdateReminder(Reminder reminder)
+        {
+            if (reminder != null)
+            {
+                _db.SubmitChanges();
+            }
+        }
         #endregion Reminder Methods
 
         #region ReminderStatus methods
@@ -162,5 +176,6 @@ namespace LocationBasedNotifications.Repository
         #endregion ReminderStatus methods
 
         #endregion IRepository
+
     }
 }

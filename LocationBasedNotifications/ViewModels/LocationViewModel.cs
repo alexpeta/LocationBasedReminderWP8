@@ -20,6 +20,7 @@ namespace LocationBasedNotifications
         private ObservableCollection<Location> _myLocations;
         private Location _myLocation;
         private ICommand _getGeolocationCommand;
+        private bool _isBusy;
         #endregion
 
         #region Properties
@@ -54,6 +55,21 @@ namespace LocationBasedNotifications
                 _getGeolocationCommand = value;
             }
         }
+        public bool IsBusy
+        {
+            get { return _isBusy; }
+            set
+            {
+                if (_isBusy == value)
+                {
+                    return;
+                }
+
+                NotifyPropertyChanging("IsBusy");
+                _isBusy = value;
+                NotifyPropertyChanged("IsBusy");
+            }
+        }
         #endregion Properties
 
         #region Constructors
@@ -61,6 +77,8 @@ namespace LocationBasedNotifications
         {
             MyLocations = new ObservableCollection<Location>();
             MyLocation = new Location();
+            IsBusy = false;
+
             GetGeolocationCommand = new DelegateCommand(OnGetGeolocationCommand);
 
             PopulateModelWithStorageData();
@@ -71,12 +89,14 @@ namespace LocationBasedNotifications
         #region Private Methods
         private async void OnGetGeolocationCommand(object obj)
         {
+            IsBusy = true;
             Geocoordinate currentPosition = await HelperMethods.GetCurrentLocation();
             if (currentPosition != null)
             {
                 MyLocation.Latitude = currentPosition.Latitude;
                 MyLocation.Longitude = currentPosition.Longitude;
             }
+            IsBusy = false;
         }
         private void PopulateModelWithStorageData()
         {

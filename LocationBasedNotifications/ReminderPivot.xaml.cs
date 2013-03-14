@@ -29,8 +29,8 @@ namespace LocationBasedNotifications
         {
             InitializeComponent();
             CreateAppBar();
-            _model = new ReminderViewModel();
-            this.DataContext = _model;
+            LoadViewModel();
+
         }
         #endregion Constructors
 
@@ -50,6 +50,12 @@ namespace LocationBasedNotifications
             addBarButton.Click += CreateReminderButton_Click;
             ApplicationBar.Buttons.Add(addBarButton);
 
+        }
+
+        private void LoadViewModel()
+        {
+            _model = new ReminderViewModel();
+            this.DataContext = _model;
         }
 
         #region Click Event Handlers
@@ -75,9 +81,9 @@ namespace LocationBasedNotifications
                 }
 
                 NavigationService.Navigate(new Uri(string.Format("/Map.xaml?locationId={0}", castedReminderId.ToString()), UriKind.Relative));
-
             }
         }
         #endregion  Private Methods
+
     }
 }

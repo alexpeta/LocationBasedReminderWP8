@@ -23,6 +23,8 @@ namespace LocationBasedNotifications
         private ICommand _activationCommand;
         private ICommand _deleteCommand;
         private Reminder _selectedReminder;
+        private bool _hasData;
+        private bool _isBusy;
         #endregion Private Members
 
         #region Public Properties
@@ -80,6 +82,31 @@ namespace LocationBasedNotifications
                 _deleteCommand = value;
             }
         }
+        public bool HasData
+        {
+            get { return _hasData; }
+            set 
+            {
+                NotifyPropertyChanging("HasData");
+                _hasData = value;
+                NotifyPropertyChanged("HasData");
+            }
+        }
+        public bool IsBusy
+        {
+            get { return _isBusy; }
+            set
+            {
+                if (_isBusy == value)
+                {
+                    return;
+                }
+
+                NotifyPropertyChanging("IsBusy");
+                _isBusy = value;
+                NotifyPropertyChanged("IsBusy");
+            }
+        }
         #endregion Public Properties
 
         #region Constructors
@@ -90,11 +117,15 @@ namespace LocationBasedNotifications
             InctiveReminders = new ObservableCollection<Reminder>();
             Statuses = new ObservableCollection<ReminderStatus>();
             SelectedReminder = null;
+            HasData = false;
+            IsBusy = false;
 
             ActivationCommand = new DelegateCommand(this.OnActivationCommand);
             DeleteCommand = new DelegateCommand(this.OnDeleteCommand);
 
+            IsBusy = true;
             LoadDataAsyncFromRepository();
+            IsBusy = false;
 
         }
         #endregion Constructors
@@ -116,6 +147,7 @@ namespace LocationBasedNotifications
         }
         public void OnActivationCommand(object reminderId)
         {
+            IsBusy = true;
             int castedReminderId = 0;
             try
             {
@@ -128,17 +160,29 @@ namespace LocationBasedNotifications
 
             if (castedReminderId != 0 && castedReminderId != -1)
             {
-                if (ActiveReminders.Any(r => r.ReminderId == castedReminderId))
+                Reminder reminder = base.Repository.GetReminderById(castedReminderId);
+                if (reminder != null)
                 {
-                    Reminder reminder = ActiveReminders.FirstOrDefault(r=>r.ReminderId == castedReminderId);
-                    this.DeactivateSelectedItem(reminder);
-                }
-                else if (InctiveReminders.Any(r => r.ReminderId == castedReminderId))
-                {
-                    Reminder reminder = InctiveReminders.FirstOrDefault(r => r.ReminderId == castedReminderId);
-                    this.ActivateSelectedItem(reminder);
+                    if (reminder.Status != null)
+                    {
+                        ReminderStatus status = null;
+                        if (string.Equals(reminder.Status.Value, "Active", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            status = base.Repository.GetStatusById((int)ReminderStatusTypes.Inactive);
+                        }
+                        else
+                        {
+                            status = base.Repository.GetStatusById((int)ReminderStatusTypes.Active);
+                        }
+
+                        reminder.Status = status;
+                        reminder.ReminderStatusId = status.ReminderStatusId;
+                        base.Repository.UpdateReminder(reminder);
+                    }
+                    LoadDataAsyncFromRepository();
                 }                     
             }
+            IsBusy = false;
         }
         public void OnDeleteCommand(object reminderId)
         {
@@ -171,11 +215,25 @@ namespace LocationBasedNotifications
         #endregion Public Methods
 
         #region Private Methods
+        private void ClearReminersLists()
+        {
+            ActiveReminders.Clear();
+            InctiveReminders.Clear();
+        }
         private async void LoadDataAsyncFromRepository()
         {
+            ClearReminersLists();
             if (base.Repository != null)
             {
-                IEnumerable<ReminderStatus> localStatusList = base.Repository.GetReminderStatusesList();
+                //load visible active sync
+                IEnumerable<ReminderStatus> localStatusList = null;
+                IEnumerable<Reminder> activeList = null;
+                IEnumerable<Reminder> temporaryInactiveList = null;
+
+                await Task.Factory.StartNew(() =>
+                    {
+                        localStatusList = base.Repository.GetReminderStatusesList();
+                    });
 
                 if (localStatusList != null)
                 {
@@ -185,27 +243,27 @@ namespace LocationBasedNotifications
                     }
                 }
 
-                //load visible active sync
-                IEnumerable<Reminder> activeList = Repository.GetRemindersByStatusId((int)ReminderStatusTypes.Active);
-                if (activeList != null)
-                {
-                    foreach (var reminder in activeList)
+                await Task.Factory.StartNew(() =>
                     {
-                        ActiveReminders.Add(reminder);
-                    }
+                        activeList = Repository.GetRemindersByStatusId((int)ReminderStatusTypes.Active);
+                    });
+
+                foreach (var item in activeList)
+                {
+                    ActiveReminders.Add(item);
                 }
 
-                //load inactive async
-                IEnumerable<Reminder> temporaryInactiveList = null;
+                if (ActiveReminders.Any())
+                {
+                    HasData = true;
+                }
 
-                Action getInactiveRemindersAction = () =>
+                await Task.Factory.StartNew(() =>
                     {
                         temporaryInactiveList = Repository.GetRemindersByStatusId((int)ReminderStatusTypes.Inactive);
-                    };
+                    });
 
-                await Task.Factory.StartNew(getInactiveRemindersAction);
-
-                Action refreshUI = () =>
+                Action refreshUIWithInactiveReminders = () =>
                     {
                         if (temporaryInactiveList != null)
                         {
@@ -216,70 +274,84 @@ namespace LocationBasedNotifications
                         }
                     };
 
-                System.Windows.Deployment.Current.Dispatcher.BeginInvoke(refreshUI);
+                System.Windows.Deployment.Current.Dispatcher.BeginInvoke(refreshUIWithInactiveReminders);
             }
 
         }
-        private void DeactivateSelectedItem(Reminder reminder)
+        
+        //private void DeactivateSelectedItem(Reminder reminder)
+        //{
+        //    if (reminder != null)
+        //    {
+        //        ActiveReminders.Remove(reminder);
+        //        InctiveReminders.Add(reminder);
+
+        //        //ReminderStatus status = base.Repository.GetStatusById((int)ReminderStatusTypes.Inactive);
+
+        //        //reminder.Status = status;
+        //        //reminder.ReminderStatusId = status.ReminderStatusId;
+
+        //        base.Repository.UpdateReminder(reminder);
+
+        //        if (!ActiveReminders.Any())
+        //        {
+        //            RemoveBackgroundAgent();
+        //            HasData = false;
+        //        }
+        //    }
+        //}
+        //private void ActivateSelectedItem(Reminder reminder)
+        //{
+        //    if (reminder != null)
+        //    {
+        //        InctiveReminders.Remove(reminder);
+        //        ActiveReminders.Add(reminder);
+
+        //        ReminderStatus status = base.Repository.GetStatusById((int)ReminderStatusTypes.Active);
+        //        reminder.Status = status;
+        //        reminder.ReminderStatusId = status.ReminderStatusId;
+        //        base.Repository.UpdateReminder(reminder);
+
+        //        if (ActiveReminders.Any())
+        //        {
+        //            StartBackgroundAgent();
+        //            HasData = true;
+        //        }
+        //    }
+        //}        
+        private async void StartBackgroundAgent()
         {
-            if (reminder != null)
-            {
-                ActiveReminders.Remove(reminder);
-
-                Reminder copyOfSelectedReminder = reminder.DeepCopy();
-                copyOfSelectedReminder.Status = Statuses.FirstOrDefault(s => string.Equals(s.Value, "Inactive", StringComparison.CurrentCultureIgnoreCase));
-                InctiveReminders.Add(copyOfSelectedReminder);
-
-                if (!ActiveReminders.Any())
+            await Task.Factory.StartNew(() =>
                 {
-                    RemoveBackgroundAgent();
-                }
-            }
+                    PeriodicTask periodicTask = null;
+
+                    periodicTask = ScheduledActionService.Find(Constants.BackgroundAgentName) as PeriodicTask;
+                    if (periodicTask != null)
+                    {
+                        ScheduledActionService.Remove(Constants.BackgroundAgentName);
+                    }
+
+                    periodicTask = new PeriodicTask(Constants.BackgroundAgentName);
+                    periodicTask.Description = "This is Lockscreen image provider app.";
+                    periodicTask.ExpirationTime = DateTime.Now.AddDays(14);
+
+                    ScheduledActionService.Add(periodicTask);
+
+                    ScheduledActionService.LaunchForTest(Constants.BackgroundAgentName, TimeSpan.FromSeconds(Constants.Timeout));
+                });
         }
-        private void ActivateSelectedItem(Reminder reminder)
+        private async void RemoveBackgroundAgent()
         {
-            if (reminder != null)
-            {
-                InctiveReminders.Remove(reminder);
-
-                Reminder copyOfSelectedReminder = reminder.DeepCopy();
-                copyOfSelectedReminder.Status = Statuses.FirstOrDefault(s => string.Equals(s.Value, "Active", StringComparison.CurrentCultureIgnoreCase));
-
-                if (!ActiveReminders.Any())
+            await Task.Factory.StartNew(()=>
                 {
-                    StartBackgroundAgent();
-                }
-                
-                ActiveReminders.Add(copyOfSelectedReminder);
-            }
-        }        
-        private void StartBackgroundAgent()
-        {
-            PeriodicTask periodicTask = null;
+                    PeriodicTask periodicTask = null;
 
-            periodicTask = ScheduledActionService.Find(Constants.BackgroundAgentName) as PeriodicTask;
-            if (periodicTask != null)
-            {
-                ScheduledActionService.Remove(Constants.BackgroundAgentName);
-            }
-
-            periodicTask = new PeriodicTask(Constants.BackgroundAgentName);
-            periodicTask.Description = "This is Lockscreen image provider app.";
-            periodicTask.ExpirationTime = DateTime.Now.AddDays(14);
-
-            ScheduledActionService.Add(periodicTask);
-
-            ScheduledActionService.LaunchForTest(Constants.BackgroundAgentName, TimeSpan.FromSeconds(10));
-        }
-        private void RemoveBackgroundAgent()
-        {
-            PeriodicTask periodicTask = null;
-
-            periodicTask = ScheduledActionService.Find(Constants.BackgroundAgentName) as PeriodicTask;
-            if (periodicTask != null)
-            {
-                ScheduledActionService.Remove(Constants.BackgroundAgentName);
-            }
+                    periodicTask = ScheduledActionService.Find(Constants.BackgroundAgentName) as PeriodicTask;
+                    if (periodicTask != null)
+                    {
+                        ScheduledActionService.Remove(Constants.BackgroundAgentName);
+                    }
+                });
         }
         #endregion Private Methods
     }

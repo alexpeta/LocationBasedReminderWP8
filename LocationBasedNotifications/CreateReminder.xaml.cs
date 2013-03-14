@@ -20,9 +20,17 @@ namespace LocationBasedNotifications
         public CreateReminder()
         {
             InitializeComponent();
-
             _viewModel = new CreateReminderViewModel();
+            this.DataContext = _viewModel;
         }
         #endregion Constructors
+
+        #region Private Methods
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            _viewModel.SaveReminder();
+            NavigationService.Navigate(new Uri("/ReminderPivot.xaml", UriKind.Relative));
+        }
+        #endregion Private Methods
     }
 }

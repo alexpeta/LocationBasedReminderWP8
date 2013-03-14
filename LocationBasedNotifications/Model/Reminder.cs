@@ -20,11 +20,22 @@ namespace LocationBasedNotifications
         private int _reminderStatusId;
         private EntityRef<ReminderStatus> _status;
         private EntityRef<Location> _location;
+        private Binary _version;
         #endregion Private Members
 
         #region Public Properties
         [Column(IsVersion = true)]
-        private Binary _version;
+        public Binary Version 
+        {
+            get
+            {
+                return _version;
+            }
+            set
+            {
+                _version = value;
+            }
+        }
 
         [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "INT NOT NULL Identity", CanBeNull = false, AutoSync = AutoSync.OnInsert)]
         public int ReminderId
@@ -87,7 +98,16 @@ namespace LocationBasedNotifications
         public int LocationId
         {
             get { return _locationId; }
-            set { _locationId = value; }
+            set 
+            {
+                if (_locationId == value)
+                {
+                    return;
+                }
+                NotifyPropertyChanging("LocationId");
+                _locationId = value;
+                NotifyPropertyChanged("LocationId");
+            }
         }
 
         [Column]
@@ -99,7 +119,13 @@ namespace LocationBasedNotifications
             }
             set
             {
+                if (_reminderStatusId == value)
+                {
+                    return;
+                }
+                NotifyPropertyChanging("ReminderStatusId");
                 _reminderStatusId = value;
+                NotifyPropertyChanged("ReminderStatusId");
             }
         }
 

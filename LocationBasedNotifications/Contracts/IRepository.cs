@@ -21,6 +21,8 @@ namespace LocationBasedNotifications.Contracts
         IEnumerable<Reminder> GetRemindersByStatusId(int statusId);
         void AddReminder(Reminder reminder);
         bool DeleteReminder(Reminder reminder);
+        void UpdateReminder(Reminder reminder);
+        Reminder GetReminderById(int reminderId);
         #endregion Reminder Methods
 
         #region Status Methods

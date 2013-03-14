@@ -123,5 +123,17 @@ namespace LocationBasedNotifications.Repository
         {
             throw new NotImplementedException();
         }
+
+
+        public void UpdateReminder(Reminder reminder)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public Reminder GetReminderById(int reminderId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

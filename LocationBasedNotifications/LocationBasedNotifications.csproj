@@ -94,6 +94,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Contracts\IRepository.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="CreateEditLocation.xaml.cs">
       <DependentUpon>CreateEditLocation.xaml</DependentUpon>
     </Compile>

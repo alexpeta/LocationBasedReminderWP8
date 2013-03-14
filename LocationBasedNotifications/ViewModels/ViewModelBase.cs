@@ -49,7 +49,6 @@ namespace LocationBasedNotifications
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
         protected void NotifyPropertyChanging(string propertyName)
         {
             var handler = PropertyChanging;
