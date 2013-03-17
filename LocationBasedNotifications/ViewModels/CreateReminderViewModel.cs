@@ -141,6 +141,7 @@ namespace LocationBasedNotifications
                             this.Locations.Add(loc);
                         }
                     }
+                    SelectedLocation = Locations.FirstOrDefault();
                     IsBusy = false;
                 };
 

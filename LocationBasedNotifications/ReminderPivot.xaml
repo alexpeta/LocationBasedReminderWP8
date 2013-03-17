@@ -20,32 +20,32 @@
         <StackPanel Orientation="Vertical">
             
             <StackPanel.Resources>
-                <local:BoolToVisibilityConverter x:Key="BoolToVisConverter"></local:BoolToVisibilityConverter>
+                <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></local:BoolToVisibilityConverter>
                 <Style TargetType="TextBlock" x:Key="Opacity20">
                     <Setter Property="Opacity" Value="0.2"></Setter>
                 </Style>
             </StackPanel.Resources>
             
-            <ProgressBar Value="90" 
-                         IsIndeterminate="True" 
-                         Visibility="{Binding IsBusy, Mode=TwoWay, Converter={StaticResource ResourceKey=BoolToVisConverter}}" />
+            <ProgressBar IsIndeterminate="True" 
+                         Visibility="{Binding IsBusy, Mode=TwoWay, Converter={StaticResource ResourceKey=BoolToVisibilityConverter}}" />
             <phone:Pivot Title="my reminders" x:Name="RemindersPivotHolder">
                 <phone:PivotItem Header="Active">
                     <Grid>
-
 
                         <TextBlock x:Name="Placeholder" Text="No reminders yet :(" 
                                HorizontalAlignment="Center" 
                                FontSize="48" 
                                RenderTransformOrigin="1,1"
                                Style="{StaticResource ResourceKey=Opacity20}"
-                               Visibility="{Binding HasData, Mode=TwoWay, Converter={StaticResource ResourceKey=BoolToVisConverter},ConverterParameter='true' }"                              
+                               Visibility="{Binding HasData, Mode=TwoWay, Converter={StaticResource ResourceKey=BoolToVisibilityConverter},ConverterParameter='true' }"                              
                                />
 
                         <ListBox x:Name="ActiveRemindersListBox" 
                              ItemsSource="{Binding ActiveReminders,Mode=TwoWay}" 
                              HorizontalContentAlignment="Stretch"
-                             Visibility="{Binding HasData, Mode=TwoWay, Converter={StaticResource ResourceKey=BoolToVisConverter},ConverterParameter='false' }">
+                             VerticalAlignment="Stretch"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             Visibility="{Binding HasData, Mode=TwoWay, Converter={StaticResource ResourceKey=BoolToVisibilityConverter},ConverterParameter='false' }">
 
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
@@ -67,6 +67,8 @@
                     <Grid>
                         <ListBox x:Name="InactiveRemindersListBox" 
                              ItemsSource="{Binding InctiveReminders,Mode=TwoWay}" 
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             VerticalAlignment="Stretch"
                              HorizontalContentAlignment="Stretch">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>

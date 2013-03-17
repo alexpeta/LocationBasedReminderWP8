@@ -53,22 +53,22 @@ namespace LocationBasedNotifications
                 gym.Name = "Gym";
                 gym.Longitude = 026.0823D;
                 gym.Latitude = 44.4298D;
-                gym.Description = string.Empty;
+                gym.Description = "Genesse Gym from Izvor";
                 _repository.AddLocation(gym);
 
                 Location home = new Location();
-                home.Name = "MyHome";
+                home.Name = "Home";
                 home.Longitude = 024.8690D;
                 home.Latitude = 43.7461D;
-                home.Description = string.Empty;
+                home.Description = "My rented flat location";
                 _repository.AddLocation(home);
 
 
                 Location work = new Location();
-                work.Name = "Work";
+                work.Name = "Cegeka";
                 work.Longitude = 026.0808D;
                 work.Latitude = 44.4294D;
-                work.Description = string.Empty;
+                work.Description = "workplace";
                 _repository.AddLocation(work);
 
 
@@ -85,7 +85,7 @@ namespace LocationBasedNotifications
                 second.Status = inactive;
                 second.ReminderStatusId = inactive.ReminderStatusId;
                 second.Location = home;
-                second.Name = "Call Raluca";
+                second.Name = "Call Raluca about something and then something more. Huge text here.";
 
 
                 _repository.AddReminder(reminder);
@@ -131,7 +131,7 @@ namespace LocationBasedNotifications
         {
 
             // find the tile object for the application tile that using "flip" contains string in it.
-            ShellTile oTile = ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("Location".ToString()));
+            ShellTile oTile = ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("MainPage".ToString()));
 
 
             if (oTile != null && oTile.NavigationUri.ToString().Contains("Location"))
@@ -176,22 +176,25 @@ namespace LocationBasedNotifications
         private void UpdateTileViaAgent_Click_1(object sender, RoutedEventArgs e)
         {
 
-            PeriodicTask periodicTask = ScheduledActionService.Find(Constants.BackgroundAgentName) as PeriodicTask;
-            if (periodicTask != null)
-            {
-                ScheduledActionService.Remove(Constants.BackgroundAgentName);
-                periodicTask = null;
-            }
+            //asta merge doar pt secondary tiles..
+            //ShellTile oTile = ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("MainPage"));
+            //FlipTileData oFliptile = new FlipTileData();
+            //oFliptile.Title = "Hello WP8!!";
+            //oFliptile.Count = 11;
+            //oFliptile.BackTitle = "Updated Flip Tile";
 
-            periodicTask = new PeriodicTask(Constants.BackgroundAgentName);
-            periodicTask.Description = "This is Lockscreen image provider app.";
-            periodicTask.ExpirationTime = DateTime.Now.AddDays(14);
+            //oFliptile.BackContent = "back of tile";
+            //oFliptile.WideBackContent = "back of the wide tile";
+            //oTile.Update(oFliptile);
 
-            ScheduledActionService.Add(periodicTask);
 
-            // If debugging is enabled, use LaunchForTest to launch the agent in one minute.
 
-            ScheduledActionService.LaunchForTest(Constants.BackgroundAgentName, TimeSpan.FromSeconds(10));
+
+
+
+
+
+            ScheduledActionService.LaunchForTest(Constants.BackgroundAgentName, TimeSpan.FromSeconds(60));
 
         }
 

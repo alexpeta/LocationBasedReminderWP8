@@ -77,8 +77,8 @@
 
                 <Button x:Name="ViewMapButton" Content="Map" Click="ViewMapButton_Click"></Button>
                 <Button x:Name="LoadTestData" Content="Load Test Data" Click="LoadTestDataButton_Click"></Button>
-                <!--<Button x:Name="LiveTileButton" Content="Change Live Tile" Click="LiveTileButton_Click_1"></Button>
-                <Button x:Name="FlipTileButton" Content="Flip Tile" Click="FlipTileButton_Click_1"></Button>-->
+                <!--<Button x:Name="LiveTileButton" Content="Change Live Tile" Click="LiveTileButton_Click_1"></Button>-->
+                <Button x:Name="FlipTileButton" Content="Flip Tile" Click="FlipTileButton_Click_1"></Button>
                 <Button x:Name="UpdateTileViaAgent" Content="Update Tile Via Agent" Click="UpdateTileViaAgent_Click_1"></Button>            </StackPanel>
 
         </Grid>

@@ -26,7 +26,7 @@ namespace LocationBasedNotifications
         #endregion Constructors
 
         #region Private Methods
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void OnSaveReminder(object sender, RoutedEventArgs e)
         {
             _viewModel.SaveReminder();
             NavigationService.Navigate(new Uri("/ReminderPivot.xaml", UriKind.Relative));

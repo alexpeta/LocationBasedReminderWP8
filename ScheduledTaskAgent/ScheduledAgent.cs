@@ -4,6 +4,10 @@ using Microsoft.Phone.Scheduler;
 using Microsoft.Phone.Shell;
 using System;
 using System.Device.Location;
+using Windows.Devices.Geolocation;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ScheduledTaskAgent
 {
@@ -40,46 +44,50 @@ namespace ScheduledTaskAgent
         /// <remarks>
         /// This method is called when a periodic or resource intensive task is invoked
         /// </remarks>
-        protected override void OnInvoke(ScheduledTask task)
+        protected override async void OnInvoke(ScheduledTask task)
         {
-            //ScheduledActionService.LaunchForTest(task.Name, TimeSpan.FromSeconds(60));
-            if (TryGetGeoCoordinate())
-            {
-                NotifyComplete();
-            }
-            else
-            {
- 
-            }
-        }
-
-        private bool TryGetGeoCoordinate()
-        {
-            bool result = false;
-            //try
+            //1.Get current geo position.
+            //2.update WP8 live tile with info.
+            //Geoposition geoposition = await TryGetGeoCoordinate();
+            //if (geoposition != null)
             //{
-                GeoCoordinateWatcher locationWatcher = new GeoCoordinateWatcher(GeoPositionAccuracy.High);
-                locationWatcher.MovementThreshold = 200;
-                locationWatcher.PositionChanged += OnPositionChanged;
-                result = locationWatcher.TryStart(true, TimeSpan.FromSeconds(10));
-            //}
-            //catch (Exception)
-            //{                
-            //    throw;
-            //}
-            return result;
 
+            //}
+
+            UpdateLiveTile();
+
+
+            NotifyComplete();
         }
 
-        private void OnPositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
+        private async Task<Geoposition> TryGetGeoCoordinate()
         {
-            GeoCoordinateWatcher raiser = sender as GeoCoordinateWatcher;
-            if (raiser != null)
+            Geolocator geolocator = new Geolocator();
+            geolocator.DesiredAccuracyInMeters = 100;
+
+            Geoposition geoposition = await geolocator.GetGeopositionAsync(maximumAge: TimeSpan.FromMinutes(1), timeout: TimeSpan.FromSeconds(30));
+            return geoposition;
+        }
+
+        private async Task<List<Reminder>> GetActiveRemindersAsync()
+        {
+
+            return null;
+        }
+
+        private void UpdateLiveTile()
+        {
+            FlipTileData primaryTileData = new FlipTileData();
+            primaryTileData.Count = 69;
+            primaryTileData.BackContent = "updated via agent!";
+
+            ShellTile primaryTile = ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("MainPage"));
+            if (primaryTile != null)
             {
-                raiser.Stop();
-                SendToastReminder();
+                primaryTile.Update(primaryTileData);
             }
         }
+
 
         private void SendToastReminder()
         {

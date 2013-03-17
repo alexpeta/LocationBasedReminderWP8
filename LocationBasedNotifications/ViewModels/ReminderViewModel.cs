@@ -1,12 +1,11 @@
 ﻿using LocationBasedNotifications.Logic;
 using LocationBasedNotifications.ViewModels;
 using Microsoft.Phone.Scheduler;
+using Microsoft.Phone.Shell;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -118,15 +117,11 @@ namespace LocationBasedNotifications
             Statuses = new ObservableCollection<ReminderStatus>();
             SelectedReminder = null;
             HasData = false;
-            IsBusy = false;
 
             ActivationCommand = new DelegateCommand(this.OnActivationCommand);
             DeleteCommand = new DelegateCommand(this.OnDeleteCommand);
-
-            IsBusy = true;
+            
             LoadDataAsyncFromRepository();
-            IsBusy = false;
-
         }
         #endregion Constructors
 
@@ -135,9 +130,11 @@ namespace LocationBasedNotifications
         {
             if (ActiveReminders != null)
             {
-                Location currentLocation = new Location();
-                currentLocation.Longitude = currentGeocoordinate.Longitude;
-                currentLocation.Latitude = currentGeocoordinate.Latitude;
+                Location currentLocation = new Location
+                {
+                    Longitude = currentGeocoordinate.Longitude,
+                    Latitude = currentGeocoordinate.Latitude
+                };
 
                 foreach (var reminder in ActiveReminders)
                 {
@@ -147,7 +144,6 @@ namespace LocationBasedNotifications
         }
         public void OnActivationCommand(object reminderId)
         {
-            IsBusy = true;
             int castedReminderId = 0;
             try
             {
@@ -182,7 +178,6 @@ namespace LocationBasedNotifications
                     LoadDataAsyncFromRepository();
                 }                     
             }
-            IsBusy = false;
         }
         public void OnDeleteCommand(object reminderId)
         {
@@ -222,6 +217,7 @@ namespace LocationBasedNotifications
         }
         private async void LoadDataAsyncFromRepository()
         {
+            IsBusy = true;
             ClearReminersLists();
             if (base.Repository != null)
             {
@@ -272,86 +268,78 @@ namespace LocationBasedNotifications
                                 InctiveReminders.Add(reminder);
                             }
                         }
+                        IsBusy = false;
+                        
+                        RefreshLiveTile();
+
+                        if (ActiveReminders.Any())
+                        {
+                            //StartBackgroundAgentAsync();
+                        }
+                        else
+                        {
+                            //RemoveBackgroundAgentAsync();
+                        }
                     };
 
                 System.Windows.Deployment.Current.Dispatcher.BeginInvoke(refreshUIWithInactiveReminders);
             }
 
-        }
-        
-        //private void DeactivateSelectedItem(Reminder reminder)
-        //{
-        //    if (reminder != null)
-        //    {
-        //        ActiveReminders.Remove(reminder);
-        //        InctiveReminders.Add(reminder);
-
-        //        //ReminderStatus status = base.Repository.GetStatusById((int)ReminderStatusTypes.Inactive);
-
-        //        //reminder.Status = status;
-        //        //reminder.ReminderStatusId = status.ReminderStatusId;
-
-        //        base.Repository.UpdateReminder(reminder);
-
-        //        if (!ActiveReminders.Any())
-        //        {
-        //            RemoveBackgroundAgent();
-        //            HasData = false;
-        //        }
-        //    }
-        //}
-        //private void ActivateSelectedItem(Reminder reminder)
-        //{
-        //    if (reminder != null)
-        //    {
-        //        InctiveReminders.Remove(reminder);
-        //        ActiveReminders.Add(reminder);
-
-        //        ReminderStatus status = base.Repository.GetStatusById((int)ReminderStatusTypes.Active);
-        //        reminder.Status = status;
-        //        reminder.ReminderStatusId = status.ReminderStatusId;
-        //        base.Repository.UpdateReminder(reminder);
-
-        //        if (ActiveReminders.Any())
-        //        {
-        //            StartBackgroundAgent();
-        //            HasData = true;
-        //        }
-        //    }
-        //}        
-        private async void StartBackgroundAgent()
+        }    
+        private void StartBackgroundAgentAsync(bool forceRestart = false)
         {
-            await Task.Factory.StartNew(() =>
-                {
-                    PeriodicTask periodicTask = null;
+            PeriodicTask periodicTask = null;
+            periodicTask = ScheduledActionService.Find(Constants.BackgroundAgentName) as PeriodicTask;
 
-                    periodicTask = ScheduledActionService.Find(Constants.BackgroundAgentName) as PeriodicTask;
-                    if (periodicTask != null)
-                    {
-                        ScheduledActionService.Remove(Constants.BackgroundAgentName);
-                    }
+            if (periodicTask == null || forceRestart)
+            {
+                //ScheduledActionService.Remove(Constants.BackgroundAgentName);
 
-                    periodicTask = new PeriodicTask(Constants.BackgroundAgentName);
-                    periodicTask.Description = "This is Lockscreen image provider app.";
-                    periodicTask.ExpirationTime = DateTime.Now.AddDays(14);
+                periodicTask = new PeriodicTask(Constants.BackgroundAgentName);
+                periodicTask.Description = "Location Based Reminders Agent";
+                periodicTask.ExpirationTime = DateTime.Now.AddDays(14);
 
-                    ScheduledActionService.Add(periodicTask);
+                ScheduledActionService.Add(periodicTask);
 
-                    ScheduledActionService.LaunchForTest(Constants.BackgroundAgentName, TimeSpan.FromSeconds(Constants.Timeout));
-                });
+                //TODO : this is for dev only
+                ScheduledActionService.LaunchForTest(Constants.BackgroundAgentName, TimeSpan.FromSeconds(Constants.Timeout));
+            }
         }
-        private async void RemoveBackgroundAgent()
+        private  void RemoveBackgroundAgentAsync()
         {
-            await Task.Factory.StartNew(()=>
-                {
-                    PeriodicTask periodicTask = null;
+            PeriodicTask periodicTask = null;
 
-                    periodicTask = ScheduledActionService.Find(Constants.BackgroundAgentName) as PeriodicTask;
-                    if (periodicTask != null)
-                    {
-                        ScheduledActionService.Remove(Constants.BackgroundAgentName);
-                    }
-                });
+            periodicTask = ScheduledActionService.Find(Constants.BackgroundAgentName) as PeriodicTask;
+            if (periodicTask != null)
+            {
+                ScheduledActionService.Remove(Constants.BackgroundAgentName);
+            }
+        }
+        private void RefreshLiveTile()
+        {
+            FlipTileData tileData = new FlipTileData()
+            {
+                Title = "LocationBasedReminder",
+                SmallBackgroundImage = new Uri("/Assets/Tiles/A159.png", UriKind.Relative),
+                BackgroundImage = new Uri("/Assets/Tiles/A336.png", UriKind.Relative),
+                WideBackgroundImage = new Uri("/Assets/Tiles/A691.png", UriKind.Relative),
+            };
+            
+            tileData.BackTitle = "Back Tile";
+            tileData.BackContent = string.Empty;
+            tileData.WideBackContent = string.Empty;
+            tileData.Count = ActiveReminders.Count;
+            
+            ShellTile liveTile = ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("MainPage"));
+            if (liveTile == null)
+            {
+                Uri tileUri = new Uri("/MainPage.xaml", UriKind.Relative);               
+                ShellTile.Create(tileUri, tileData, true);
+            }
+            else
+            {
+                liveTile.Update(tileData);
+            }
         }
         #endregion Private Methods
     }
